@@ -68,11 +68,3 @@ A community-driven platform for sharing and discovering gaming guides, tips, and
 6. Open a **Pull Request** describing your changes.
 
 Before contributing, please review our [Code of Conduct](#code-of-conduct).
-
----
-
-## Project Setup
-1. **Clone the Repo** (if you haven’t already):
-   ```bash
-   git clone https://github.com/yourusername/game-tips-tricks.git
-   cd game-tips-tricks
