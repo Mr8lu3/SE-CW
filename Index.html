@@ -11,18 +11,16 @@
             background-color: #010101; /* Black background */
             color: #FEFDFD; /* White text */
         }
+        /* Header with title */
         .header {
-            background-color: #010101;
-            color: #FEFDFD;
-            padding: 15px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-left: 20px;
-            padding-right: 20px;
+            background-color: #3A3153; /* Purple background */
+            color: #FEFDFD; /* White text */
+            padding: 20px;
+            text-align: center;
         }
         .header h1 {
             margin: 0;
+            font-size: 2.5em;
         }
         .navbar {
             display: flex;
@@ -37,36 +35,13 @@
         .navbar a:hover {
             background-color: #5F43B2; /* Bright purple for hover effect */
         }
-        .search-bar {
-            display: flex;
-            align-items: center;
-        }
-        .search-bar input[type="text"] {
-            padding: 10px;
-            margin-left: 10px;
-            border: none;
-            border-radius: 5px;
-            width: 200px;
-        }
-        .search-bar button {
-            padding: 10px;
-            margin-left: 5px;
-            background-color: #5F43B2;
-            border: none;
-            border-radius: 5px;
-            color: white;
-            cursor: pointer;
-        }
-        .search-bar button:hover {
-            background-color: #3A3153; /* Darker purple for hover effect */
-        }
         .main-content {
             text-align: center;
             margin-top: 50px;
         }
         .footer {
             text-align: center;
-            background-color: #010101; /* Black background for footer */
+            background-color: #3A3153; /* Purple background for footer */
             color: #FEFDFD;
             padding: 10px 0;
             position: fixed;
@@ -88,14 +63,12 @@
     </style>
 </head>
 <body>
+    <!-- Header Section (Purple background) -->
     <div class="header">
-        <h1>LOGO</h1>
-        <!-- Search Bar Section -->
-        <div class="search-bar">
-            <input type="text" placeholder="Search...">
-            <button>Search</button>
-        </div>
+        <h1>Game Sharing Tips & Tricks</h1>
     </div>
+
+    <!-- Navigation Bar -->
     <div class="navbar">
         <a href="home.html">Home</a>
         <a href="guides.html">Guides</a>
