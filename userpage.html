@@ -11,16 +11,36 @@
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
     }
-    header {
-      background-color: #3A3153;
+    /* Header with title */
+    .header {
+      background-color: #3A3153; /* Purple background */
+      color: #FEFDFD; /* White text */
       padding: 20px;
       text-align: center;
     }
-    header h1 {
+    .header h1 {
       margin: 0;
       font-size: 2.5em;
     }
+    /* Navigation Bar */
+    .navbar {
+      display: flex;
+      justify-content: center;
+      background-color: #3A3153; /* Dark purple background */
+    }
+    .navbar a {
+      color: #FEFDFD;
+      padding: 15px;
+      text-decoration: none;
+    }
+    .navbar a:hover {
+      background-color: #5F43B2; /* Bright purple for hover effect */
+    }
+    /* Profile Section */
     .container {
       max-width: 800px;
       margin: 20px auto;
@@ -36,9 +56,8 @@
       width: 40%;
     }
     .profile-section img {
-      width: 100px;
-      height: 250px;
-      border-radius: 50%;
+      width: 150px; /* Larger size for 4x4 square */
+      height: 150px; /* Larger size for 4x4 square */
       background-color: #FEFDFD;
     }
     .badge {
@@ -53,6 +72,7 @@
     .details {
       margin-top: 10px;
     }
+    /* Stats Section */
     .stats-section {
       background-color: #5F43B2;
       border-radius: 8px;
@@ -62,6 +82,18 @@
     .stats-section h2 {
       margin: 0;
     }
+    /* Footer Section */
+    footer {
+      background-color: #3A3153;
+      text-align: center;
+      padding: 10px;
+      margin-top: auto; /* This ensures the footer is pushed to the bottom */
+    }
+    footer p {
+      margin: 0;
+      color: #FEFDFD;
+    }
+    /* Settings Button */
     .settings {
       text-align: center;
       margin-top: 20px;
@@ -78,9 +110,20 @@
   </style>
 </head>
 <body>
-  <header>
+  <!-- Header Section -->
+  <div class="header">
     <h1>User Profile</h1>
-  </header>
+  </div>
+
+  <!-- Navigation Bar -->
+  <div class="navbar">
+    <a href="home.html">Home</a>
+    <a href="guides.html">Guides</a>
+    <a href="forum.html">Forum</a>
+    <a href="user.html">User</a>
+    <a href="about.html">About Us</a>
+  </div>
+
   <div class="container">
     <div class="profile-section">
       <img src="profile-placeholder.png" alt="User Profile Picture">
@@ -97,8 +140,15 @@
       <p>Achievements: <strong>Gold Tier</strong></p>
     </div>
   </div>
+
   <div class="settings">
     <button>Settings</button>
   </div>
+
+  <!-- Footer Section -->
+  <footer>
+    <p>&copy; 2025 Game Sharing Tips & Tricks</p>
+  </footer>
+
 </body>
 </html>

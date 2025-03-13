@@ -11,6 +11,9 @@
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
     }
     header {
       background-color: #3A3153;
@@ -38,6 +41,7 @@
       max-width: 800px;
       margin: 20px auto;
       padding: 20px;
+      flex: 1;
     }
     .content {
       background-color: #5F43B2;
@@ -55,7 +59,7 @@
       background-color: #3A3153;
       text-align: center;
       padding: 10px;
-      margin-top: 20px;
+      margin-top: auto; /* This ensures the footer is pushed to the bottom */
     }
     footer p {
       margin: 0;
@@ -65,10 +69,9 @@
 </head>
 <body>
   <header>
-    <h1>Game Sharing Tips &amp; Tricks</h1>
+    <h1>About Us</h1>
   </header>
-
-  <!-- Navigation Bar from Akeel's code -->
+  
   <div class="navbar">
     <a href="home.html">Home</a>
     <a href="guides.html">Guides</a>
@@ -87,7 +90,7 @@
   </div>
 
   <footer>
-    <p>&copy; 2025 Game Sharing Tips &amp; Tricks</p>
+    <p>&copy; 2025 Game Sharing Tips & Tricks</p>
   </footer>
 </body>
 </html>
