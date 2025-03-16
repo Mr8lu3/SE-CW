@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Sharing Tips & Tricks - Guides</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #010101;
+            color: #FEFDFD;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            background-color: #3A3153;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 40px;
+        }
+        .nav-menu {
+            background-color: #3A3153;
+            text-align: center;
+            padding: 10px 0;
+        }
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            padding: 0 15px;
+            font-size: 18px;
+        }
+        .nav-menu a:hover {
+            text-decoration: underline;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            padding: 20px 0;
+        }
+        .guide-item {
+            background-color: #222;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            border: 1px solid #444;
+        }
+        .guide-item:hover {
+            transform: translateY(-5px);
+            background-color: #2a2a2a;
+        }
+        .guide-item h3 {
+            color: #6B47B8;
+            font-size: 24px;
+            margin-top: 0;
+        }
+        .guide-item p {
+            color: #B1AEB1;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        .guide-item span {
+            color: #6B47B8;
+            font-size: 14px;
+            display: block;
+            margin-top: 8px;
+        }
+        .guide-content {
+            background-color: #333;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+            border: 1px solid #444;
+        }
+        .guide-content h2 {
+            font-size: 28px;
+            color: #FEFDFD;
+        }
+        .guide-content p {
+            color: #B1AEB1;
+        }
+        .footer {
+            background-color: #3A3153;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Section -->
+    <div class="header">
+        Game Sharing Tips & Tricks - Guides
+    </div>
+
+    <!-- Navigation Bar -->
+    <div class="nav-menu">
+        <a href="index.html">Home</a>
+        <a href="forum.html">Forum</a>
+        <a href="userpage.html">User</a>
+        <a href="Details_page.html">About Us</a>
+        <a href="guides.html">Guides</a> <!-- Guides link added here -->
+    </div>
+
+    <!-- Guides Content -->
+    <div class="container">
+        <div class="guide-item" onclick="toggleGuide(1)">
+            <h3>How to Improve Your FPS in Games</h3>
+            <p>FPS optimization tips for smoother gameplay. Click to read more.</p>
+            <span>Published: 2025-03-16</span>
+            <div id="guide-1" class="guide-content">
+                <h2>How to Improve Your FPS in Games</h2>
+                <p>In this guide, we will explore various methods to improve your FPS in games, ensuring smoother performance, especially for competitive gaming.</p>
+                <p><strong>1. Adjust Graphics Settings:</strong> Lowering the graphical settings in-game can significantly boost your FPS. Focus on reducing textures, shadows, and anti-aliasing.</p>
+                <p><strong>2. Update Your Drivers:</strong> Make sure your graphics drivers are up to date. Manufacturers often release optimizations for new games.</p>
+                <p><strong>3. Overclock Your GPU:</strong> If you're comfortable with it, overclocking your GPU can help improve performance, but it comes with increased power consumption and heat generation.</p>
+                <p><strong>4. Use FPS Cap:</strong> Capping the FPS to a certain limit can stabilize the game performance and prevent unnecessary power consumption.</p>
+            </div>
+        </div>
+
+        <div class="guide-item" onclick="toggleGuide(2)">
+            <h3>Best RPG Builds for Beginners</h3>
+            <p>Explore some of the most beginner-friendly RPG builds. Click to read more.</p>
+            <span>Published: 2025-03-10</span>
+            <div id="guide-2" class="guide-content">
+                <h2>Best RPG Builds for Beginners</h2>
+                <p>RPGs can be overwhelming for beginners, so we've compiled the best builds that are easy to learn and fun to play.</p>
+                <p><strong>1. Warrior Build:</strong> The Warrior build is perfect for beginners who want to focus on physical combat. Equip heavy armor and focus on strength and vitality.</p>
+                <p><strong>2. Mage Build:</strong> If you prefer magic, the Mage build allows you to use ranged attacks and magical spells. Focus on intelligence and mana regeneration.</p>
+                <p><strong>3. Hybrid Build:</strong> The Hybrid build is a balanced combination of both strength and magic, giving you flexibility in combat.</p>
+            </div>
+        </div>
+
+        <div class="guide-item" onclick="toggleGuide(3)">
+            <h3>Essential Mods for Skyrim</h3>
+            <p>Discover the must-have mods that enhance your Skyrim experience. Click to read more.</p>
+            <span>Published: 2025-03-05</span>
+            <div id="guide-3" class="guide-content">
+                <h2>Essential Mods for Skyrim</h2>
+                <p>Mods can drastically change the way you experience Skyrim. Here are some essential mods that improve gameplay, graphics, and story.</p>
+                <p><strong>1. Skyrim Script Extender (SKSE):</strong> A must-have mod that allows other mods to interact with Skyrim in deeper ways.</p>
+                <p><strong>2. Unofficial Skyrim Patch:</strong> This mod fixes hundreds of bugs and glitches, improving the overall game experience.</p>
+                <p><strong>3. RealVision ENB:</strong> A graphical enhancement mod that makes Skyrim's visuals stunning and lifelike.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Section -->
+    <div class="footer">
+        © 2025 Game Sharing Tips & Tricks. All rights reserved.
+    </div>
+
+    <script>
+        function toggleGuide(guideId) {
+            const guideContent = document.getElementById(`guide-${guideId}`);
+            const isVisible = guideContent.style.display === 'block';
+            guideContent.style.display = isVisible ? 'none' : 'block';
+        }
+    </script>
+
+</body>
+</html>
