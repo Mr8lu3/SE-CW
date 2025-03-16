@@ -18,7 +18,10 @@
             padding: 20px;
             text-align: center;
         }
-        
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
         .navbar {
             display: flex;
             justify-content: center;
@@ -62,7 +65,7 @@
 <body>
     <!-- Header Section (Purple background) -->
     <div class="header">
-        Game Sharing Tips & Tricks
+        <h1>Game Sharing Tips & Tricks</h1>
     </div>
 
     <!-- Navigation Bar -->
@@ -74,22 +77,10 @@
         <a href="guides.html">Guides</a> <!-- Added Guides link -->
     </div>
     
-    
-
     <div class="main-content">
         <h2 id="welcomeMessage">Welcome to the Website</h2>
         <button onclick="changeMessage()">Change Welcome Message</button>
     </div>
 
     <div class="footer">
-        <p>&copy; 2025 Website Name. All rights reserved.</p>
-    </div>
-
-    <script>
-        function changeMessage() {
-            const message = document.getElementById('welcomeMessage');
-            message.innerText = "Welcome to Our Interactive Website!";
-        }
-    </script>
-</body>
-</html>
+        <p>&copy; 2025 Website Name. All r
