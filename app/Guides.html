@@ -39,7 +39,7 @@
             padding: 20px 0;
         }
         .filter-bar {
-            margin-top: 20px; /* Added gap between the search bar and the top navigation bar */
+            margin-top: 20px;
             margin-bottom: 20px;
             display: flex;
             justify-content: center;
@@ -147,6 +147,7 @@
 
     <!-- Guides Content -->
     <div class="container" id="guideContainer">
+        <!-- Existing Guides -->
         <div class="guide-item" onclick="toggleGuide(1)" data-title="How to Improve Your FPS in Games" data-category="fps">
             <h3>How to Improve Your FPS in Games</h3>
             <p>FPS optimization tips for smoother gameplay. Click to read more.</p>
@@ -186,6 +187,50 @@
                 <p><strong>3. RealVision ENB:</strong> A graphical enhancement mod that makes Skyrim's visuals stunning and lifelike.</p>
             </div>
         </div>
+
+        <!-- New Guides Added to Ensure 2 Guides per Filter Category -->
+
+        <!-- FPS Category -->
+        <div class="guide-item" onclick="toggleGuide(4)" data-title="How to Get the Best Performance in Racing Games" data-category="fps">
+            <h3>How to Get the Best Performance in Racing Games</h3>
+            <p>Enhance your racing game experience with these performance tips. Click to read more.</p>
+            <span>Published: 2025-03-18</span>
+            <div id="guide-4" class="guide-content">
+                <h2>How to Get the Best Performance in Racing Games</h2>
+                <p>Racing games require smooth and fast performance to ensure a good experience. Here are some tips to boost your performance in popular racing games.</p>
+                <p><strong>1. Use a Racing Wheel:</strong> A racing wheel offers better control and can improve overall gameplay performance.</p>
+                <p><strong>2. Adjust In-Game Settings:</strong> Lower graphics settings and tweak controls for a smoother gaming experience.</p>
+            </div>
+        </div>
+
+        <!-- RPG Category -->
+        <div class="guide-item" onclick="toggleGuide(5)" data-title="Top 5 Beginner-Friendly RPGs" data-category="rpg">
+            <h3>Top 5 Beginner-Friendly RPGs</h3>
+            <p>Discover the best RPGs for beginners. Click to read more.</p>
+            <span>Published: 2025-03-22</span>
+            <div id="guide-5" class="guide-content">
+                <h2>Top 5 Beginner-Friendly RPGs</h2>
+                <p>Getting into RPGs can be daunting. Here are the top RPGs that are beginner-friendly and easy to get started with.</p>
+                <p><strong>1. The Witcher 3:</strong> A rich open-world RPG with a compelling story and accessible gameplay.</p>
+                <p><strong>2. Skyrim:</strong> Another great choice, featuring immersive world-building and combat mechanics suitable for all players.</p>
+                <p><strong>3. Divinity: Original Sin 2:</strong> A turn-based RPG with a lot of freedom and great co-op gameplay.</p>
+            </div>
+        </div>
+
+        <!-- Mods Category -->
+        <div class="guide-item" onclick="toggleGuide(6)" data-title="Top 5 Mods for GTA V" data-category="mods">
+            <h3>Top 5 Mods for GTA V</h3>
+            <p>Transform your GTA V experience with these must-have mods. Click to read more.</p>
+            <span>Published: 2025-03-20</span>
+            <div id="guide-6" class="guide-content">
+                <h2>Top 5 Mods for GTA V</h2>
+                <p>Here are some of the top mods you should install to enhance your Grand Theft Auto V experience.</p>
+                <p><strong>1. LSPDFR Mod:</strong> Allows you to play as a police officer in GTA V.</p>
+                <p><strong>2. OpenIV:</strong> A powerful modding tool to edit game files for further customization.</p>
+                <p><strong>3. Realistic Driving V:</strong> A mod that changes the car physics for a more realistic driving experience.</p>
+            </div>
+        </div>
+
     </div>
 
     <!-- Footer Section -->
