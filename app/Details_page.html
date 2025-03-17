@@ -1,91 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Game Sharing Tips & Tricks - Detail Page</title>
-  <style>
-    body {
-      background-color: #010101;
-      color: #FEFDFD;
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-    header {
-      background-color: #3A3153;
-      padding: 20px;
-      text-align: center;
-    }
-    header h1 {
-      margin: 0;
-      font-size: 2.5em;
-    }
-    .navbar {
-      display: flex;
-      justify-content: center;
-      background-color: #3A3153; /* Dark purple background */
-    }
-    .navbar a {
-      color: #FEFDFD;
-      padding: 15px;
-      text-decoration: none;
-    }
-    .navbar a:hover {
-      background-color: #5F43B2; /* Bright purple for hover effect */
-    }
-    .container {
-      max-width: 800px;
-      margin: 20px auto;
-      padding: 20px;
-      flex: 1;
-    }
-    .content {
-      background-color: #5F43B2;
-      border-radius: 8px;
-      padding: 20px;
-    }
-    .content h2 {
-      color: #FEFDFD;
-    }
-    .content p {
-      color: #B1AEB1;
-      line-height: 1.6;
-    }
-    footer {
-      background-color: #3A3153;
-      text-align: center;
-      padding: 10px;
-      margin-top: auto; /* This ensures the footer is pushed to the bottom */
-    }
-    footer p {
-      margin: 0;
-      color: #FEFDFD;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Game Sharing Tips & Tricks</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #010101; /* Black background */
+            color: #FEFDFD; /* White text */
+        }
+
+        /* Header */
+        .header {
+            background-color: #3A3153; /* Dark purple */
+            color: #FEFDFD;
+            padding: 20px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.2em;
+        }
+
+        /* Navigation */
+        .navbar {
+            display: flex;
+            justify-content: center;
+            background-color: #3A3153;
+        }
+        .navbar a {
+            color: #FEFDFD;
+            padding: 15px;
+            text-decoration: none;
+        }
+        .navbar a:hover {
+            background-color: #5F43B2;
+        }
+
+        /* About Us Content Box */
+        .about-box {
+            background-color: #2D2D2D; /* Light grey box */
+            color: #A17EFF; /* Purple text */
+            padding: 30px;
+            border-radius: 10px;
+            margin: 30px auto;
+            width: 80%;
+            text-align: left;
+            font-size: 1.2em;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .about-box:hover {
+            transform: translateY(-5px); /* Lift effect */
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            background-color: #3A3153;
+            color: #FEFDFD;
+            padding: 10px 0;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <h1>About Us</h1>
-  </header>
-  
-  <div class="navbar">
-    <a href="index.html">Home</a>
-    <a href="forum.html">Forum</a>
-    <a href="userpage.html">User</a>
-    <a href="Details_page.html">About Us</a>
-    <a href="guides.html">Guides</a> <!-- Added Guides link -->
-  </div>
 
-  <div class="container">
-    <div class="content">
-      <h2>Detail Page</h2>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris consequat, felis non feugiat elementum, purus libero tincidunt libero, eget convallis mauris nisi ac nibh. Sed imperdiet dui id nisi fermentum, sed dapibus magna ultricies. Vivamus pretium nibh sit amet justo lobortis, id tristique purus vestibulum.</p>
-      <p>Praesent non orci nec nisl condimentum hendrerit. Fusce vel diam eget massa pretium consequat. Nulla facilisi. Donec id arcu vel dui ullamcorper semper. Aliquam erat volutpat. Curabitur consectetur, odio at dignissim fermentum, magna mauris consequat est, sit amet malesuada metus massa in sapien.</p>
-      <p>Integer nec mauris eget magna blandit molestie. Aenean imperdiet, sapien non vulputate congue, lacus felis sollicitudin nibh, at viverra magna tortor nec nibh. Donec faucibus, velit vitae vestibulum tristique, justo ante cursus nulla, non ultrices sapien justo ut lorem.</p>
+    <!-- Header -->
+    <div class="header">
+        <h1>About Us</h1>
+    </div>
+
+    <!-- Navigation Bar -->
+    <div class="navbar">
+        <a href="index.html">Home</a>
+        <a href="forum.html">Forum</a>
+        <a href="userpage.html">User</a>
+        <a href="about.html">About Us</a>
+        <a href="guides.html">Guides</a>
+    </div>
+
+    <!-- About Us Content -->
+    <div class="about-box">
+        <h2>Who We Are</h2>
+        <p>Welcome to Game Sharing Tips & Tricks! We are passionate gamers dedicated to helping players improve their gameplay experience. Our platform provides guides, strategies, and community-driven content to help you master your favorite games.</p>
+
+        <h2>Our Mission</h2>
+        <p>We aim to create a space where gamers can find high-quality tutorials, build strategies, and share their expertise with others. Whether you're a casual player or a hardcore enthusiast, we’ve got something for everyone.</p>
+
+        <h2>Join Us</h2>
+        <p>Get involved by sharing your knowledge, joining discussions, and discovering new ways to enhance your gaming journey. Let's level up together!</p>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>&copy; 2025 Game Sharing Tips & Tricks. All rights reserved.</p>
     </div>
 
 </body>
