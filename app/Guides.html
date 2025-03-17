@@ -38,6 +38,31 @@
             margin: auto;
             padding: 20px 0;
         }
+        .filter-bar {
+            margin-top: 20px; /* Added gap between the search bar and the top navigation bar */
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        .filter-bar input {
+            padding: 10px;
+            width: 50%;
+            border-radius: 5px;
+            border: none;
+            font-size: 16px;
+            background-color: #333;
+            color: #fff;
+        }
+        .filter-bar select {
+            padding: 10px;
+            width: 20%;
+            border-radius: 5px;
+            border: none;
+            font-size: 16px;
+            background-color: #333;
+            color: #fff;
+        }
         .guide-item {
             background-color: #222;
             padding: 15px;
@@ -109,9 +134,20 @@
         <a href="guides.html">Guides</a> <!-- Guides link added here -->
     </div>
 
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+        <input type="text" id="filterInput" onkeyup="filterGuides()" placeholder="Search guides...">
+        <select id="filterCategory" onchange="filterGuides()">
+            <option value="all">All Categories</option>
+            <option value="fps">FPS Games</option>
+            <option value="rpg">RPG Games</option>
+            <option value="mods">Mods</option>
+        </select>
+    </div>
+
     <!-- Guides Content -->
-    <div class="container">
-        <div class="guide-item" onclick="toggleGuide(1)">
+    <div class="container" id="guideContainer">
+        <div class="guide-item" onclick="toggleGuide(1)" data-title="How to Improve Your FPS in Games" data-category="fps">
             <h3>How to Improve Your FPS in Games</h3>
             <p>FPS optimization tips for smoother gameplay. Click to read more.</p>
             <span>Published: 2025-03-16</span>
@@ -125,7 +161,7 @@
             </div>
         </div>
 
-        <div class="guide-item" onclick="toggleGuide(2)">
+        <div class="guide-item" onclick="toggleGuide(2)" data-title="Best RPG Builds for Beginners" data-category="rpg">
             <h3>Best RPG Builds for Beginners</h3>
             <p>Explore some of the most beginner-friendly RPG builds. Click to read more.</p>
             <span>Published: 2025-03-10</span>
@@ -138,7 +174,7 @@
             </div>
         </div>
 
-        <div class="guide-item" onclick="toggleGuide(3)">
+        <div class="guide-item" onclick="toggleGuide(3)" data-title="Essential Mods for Skyrim" data-category="mods">
             <h3>Essential Mods for Skyrim</h3>
             <p>Discover the must-have mods that enhance your Skyrim experience. Click to read more.</p>
             <span>Published: 2025-03-05</span>
@@ -158,10 +194,32 @@
     </div>
 
     <script>
+        // Function to toggle the guide content visibility
         function toggleGuide(guideId) {
             const guideContent = document.getElementById(`guide-${guideId}`);
             const isVisible = guideContent.style.display === 'block';
             guideContent.style.display = isVisible ? 'none' : 'block';
+        }
+
+        // Function to filter guides based on the input search and category
+        function filterGuides() {
+            const input = document.getElementById("filterInput").value.toLowerCase();
+            const selectedCategory = document.getElementById("filterCategory").value;
+            const guideItems = document.getElementsByClassName("guide-item");
+
+            for (let i = 0; i < guideItems.length; i++) {
+                const title = guideItems[i].getAttribute("data-title").toLowerCase();
+                const category = guideItems[i].getAttribute("data-category").toLowerCase();
+
+                const matchesTitle = title.includes(input);
+                const matchesCategory = selectedCategory === "all" || category === selectedCategory;
+
+                if (matchesTitle && matchesCategory) {
+                    guideItems[i].style.display = "block";
+                } else {
+                    guideItems[i].style.display = "none";
+                }
+            }
         }
     </script>
 
