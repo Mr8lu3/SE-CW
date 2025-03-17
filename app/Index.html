@@ -10,13 +10,20 @@
             margin: 0;
             background-color: #010101; /* Black background */
             color: #FEFDFD; /* White text */
+            background-image: url('images/image1.jpg'); /* Set the background image */
+            background-size: cover; /* Ensure the image covers the full screen */
+            background-position: center; /* Center the background image */
+            background-attachment: fixed; /* Make the background image fixed */
+            height: 100vh; /* Ensure the body takes the full height of the viewport */
         }
         /* Header with title */
         .header {
-            background-color: #3A3153; /* Purple background */
+            background-color: rgba(58, 49, 83, 0.7); /* Purple background with transparency */
             color: #FEFDFD; /* White text */
             padding: 20px;
             text-align: center;
+            position: relative;
+            z-index: 2; /* Ensure the header stays above the background */
         }
         .header h1 {
             margin: 0;
@@ -25,7 +32,8 @@
         .navbar {
             display: flex;
             justify-content: center;
-            background-color: #3A3153; /* Dark purple background */
+            background-color: rgba(58, 49, 83, 0.7); /* Dark purple background with transparency */
+            z-index: 2; /* Ensure the navbar stays above the background */
         }
         .navbar a {
             color: #FEFDFD;
@@ -38,28 +46,7 @@
         .main-content {
             text-align: center;
             margin-top: 50px;
-        }
-        /* Slideshow container */
-        .slideshow-container {
-            max-width: 600px;
-            position: relative;
-            margin: auto;
-        }
-        .slide {
-            display: none;
-        }
-        img {
-            width: 100%;
-            border-radius: 10px;
-        }
-        .footer {
-            text-align: center;
-            background-color: #3A3153; /* Purple background for footer */
-            color: #FEFDFD;
-            padding: 10px 0;
-            position: fixed;
-            width: 100%;
-            bottom: 0;
+            z-index: 2; /* Ensure the main content stays above the background */
         }
         button {
             padding: 10px 15px;
@@ -72,6 +59,16 @@
         }
         button:hover {
             background-color: #3A3153;
+        }
+        .footer {
+            text-align: center;
+            background-color: rgba(58, 49, 83, 0.7); /* Purple background for footer */
+            color: #FEFDFD;
+            padding: 10px 0;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+            z-index: 2; /* Ensure the footer stays above the background */
         }
     </style>
 </head>
@@ -95,19 +92,6 @@
     <div class="main-content">
         <h2 id="welcomeMessage">Welcome to the Website</h2>
         <button onclick="changeMessage()">Change Welcome Message</button>
-
-        <!-- Slideshow Section -->
-        <div class="slideshow-container">
-            <div class="slide">
-                <img src="https://source.unsplash.com/600x400/?gaming,console" alt="Gaming Image 1">
-            </div>
-            <div class="slide">
-                <img src="https://source.unsplash.com/600x400/?gaming,pc" alt="Gaming Image 2">
-            </div>
-            <div class="slide">
-                <img src="https://source.unsplash.com/600x400/?game-controller" alt="Gaming Image 3">
-            </div>
-        </div>
     </div>
 
     <!-- Footer -->
