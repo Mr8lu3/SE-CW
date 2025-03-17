@@ -3,112 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Log In - Game Sharing Tips & Tricks</title>
+    <title>Home Page</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #010101;
-            color: #FEFDFD;
             margin: 0;
-            padding: 0;
+            background-color: #010101; /* Black background */
+            color: #FEFDFD; /* White text */
+            background-image: url('images/image1.jpg'); /* Set the background image */
+            background-size: cover; /* Ensure the image covers the full screen */
+            background-position: center; /* Center the background image */
+            background-attachment: fixed; /* Make the background image fixed */
+            height: 100vh; /* Ensure the body takes the full height of the viewport */
         }
+        /* Header with title */
         .header {
-            background-color: #3A3153;
-            color: #FEFDFD;
-            text-align: center;
+            background-color: rgba(58, 49, 83, 0.7); /* Purple background with transparency */
+            color: #FEFDFD; /* White text */
             padding: 20px;
-            font-size: 40px;
-        }
-        .nav-menu {
-            background-color: #3A3153;
             text-align: center;
-            padding: 10px 0;
+            position: relative;
+            z-index: 2; /* Ensure the header stays above the background */
         }
-        .nav-menu a {
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+        .navbar {
+            display: flex;
+            justify-content: center;
+            background-color: rgba(58, 49, 83, 0.7); /* Dark purple background with transparency */
+            z-index: 2; /* Ensure the navbar stays above the background */
+        }
+        .navbar a {
             color: #FEFDFD;
+            padding: 15px;
             text-decoration: none;
-            padding: 0 15px;
-            font-size: 18px;
         }
-        .nav-menu a:hover {
-            text-decoration: underline;
+        .navbar a:hover {
+            background-color: #5F43B2; /* Bright purple for hover effect */
         }
-        .login-container {
-            width: 40%;
-            margin: 50px auto;
-            padding: 20px;
-            background-color: #222;
-            border-radius: 8px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
-        }
-        .login-container h2 {
-            color: #6B47B8;
-            font-size: 28px;
+        .main-content {
             text-align: center;
+            margin-top: 50px;
+            z-index: 2; /* Ensure the main content stays above the background */
         }
-        .login-container input {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            background-color: #333;
-            border: 1px solid #444;
-            border-radius: 5px;
-            color: #fff;
-            font-size: 16px;
-            box-sizing: border-box; /* Ensures padding doesn't overflow the container */
-        }
-        .login-container button {
-            width: 100%;
-            padding: 12px;
+        button {
+            padding: 10px 15px;
             background-color: #5F43B2;
             border: none;
             color: #FEFDFD;
-            font-size: 16px;
             cursor: pointer;
+            margin-right: 10px;
             border-radius: 5px;
         }
-        .login-container button:hover {
+        button:hover {
             background-color: #3A3153;
         }
         .footer {
-            background-color: #3A3153;
-            color: #FEFDFD;
             text-align: center;
-            padding: 15px;
+            background-color: rgba(58, 49, 83, 0.7); /* Purple background for footer */
+            color: #FEFDFD;
+            padding: 10px 0;
             position: fixed;
             width: 100%;
             bottom: 0;
+            z-index: 2; /* Ensure the footer stays above the background */
         }
     </style>
 </head>
 <body>
     <!-- Header Section -->
     <div class="header">
-        Log In
+        <h1>Game Sharing Tips & Tricks</h1>
     </div>
 
     <!-- Navigation Bar -->
-    <div class="nav-menu">
+    <div class="navbar">
         <a href="index.html">Home</a>
         <a href="forum.html">Forum</a>
         <a href="userpage.html">User</a>
         <a href="Details_page.html">About Us</a>
-        <a href="guides.html">Guides</a>
+        <a href="guides.html">Guides</a> <!-- Added Guides link -->
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <h2 id="welcomeMessage">Welcome to the Website</h2>
+        <a href="Login.html">
+            <button>Go to Log In</button>
+        </a>
     </div>
 
-    <!-- Login Form -->
-    <div class="login-container">
-        <h2>Log In</h2>
-        <form action="/login" method="POST">
-            <input type="text" name="username" placeholder="Username" required>
-            <input type="password" name="password" placeholder="Password" required>
-            <button type="submit">Log In</button>
-        </form>
-    </div>
-
-    <!-- Footer Section -->
+    <!-- Footer -->
     <div class="footer">
-        © 2025 Game Sharing Tips & Tricks. All rights reserved.
+        <p>&copy; 2025 Website Name. All rights reserved.</p>
     </div>
+
+    <script>
+        function changeMessage() {
+            const message = document.getElementById('welcomeMessage');
+            message.innerText = "Welcome to Our Interactive Website!";
+        }
+    </script>
 </body>
 </html>
