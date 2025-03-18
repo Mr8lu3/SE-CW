@@ -212,13 +212,17 @@
     
 
     <div class="search-bar">
-        <input type="text" id="search" onkeyup="searchForum()" placeholder="Search discussions...">
+        <input type="text" id="search" onkeyup="searchForum()" placeholder="Search Forums...">
         <select id="tagFilter" onchange="searchForum()">
             <option value="all">All Topics</option>
             <option value="fps">FPS Games</option>
             <option value="rpg">RPG Games</option>
             <option value="mods">Mods</option>
             <option value="multiplayer">Multiplayer & Co-op</option>
+            <option value="opinions">General Discussion</option>
+            <option value="Racing">Racing</option>
+            <option value="Open-World">Open-World</option>
+
         </select>
     </div>
     
@@ -249,7 +253,7 @@
             {
                 id: 1,
                 title: "🎮 General Gaming Discussion",
-                tags: ["fps", "reaction-time"],
+                tags: ["fps", "reaction-time", "opinions"],
                 posts: [
                     {
                         question: "How do you improve your reaction time in FPS games?",
