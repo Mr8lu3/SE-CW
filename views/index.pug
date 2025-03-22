@@ -1,0 +1,96 @@
+doctype html
+head
+  meta(charset='UTF-8')
+  meta(name='viewport' content='width=device-width, initial-scale=1.0')
+  title Home Page
+  style.
+    body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background-color: #010101; /* Black background */
+    color: #FEFDFD; /* White text */
+    background-image: url('/Users/atharva/SE-CW-2/images/image1.jpg'); /* Path to the image on your system */
+    background-size: cover; /* Ensure the image covers the full screen */
+    background-position: center; /* Center the background image */
+    background-repeat: no-repeat; /* Prevent the image from repeating */
+    background-attachment: fixed; /* Keep the image fixed on scroll */
+    height: 100vh; /* Ensure the body takes the full height of the viewport */
+    }
+    /* Header with title */
+    .header {
+    background-color: rgba(58, 49, 83, 0.7); /* Purple background with transparency */
+    color: #FEFDFD; /* White text */
+    padding: 20px;
+    text-align: center;
+    position: relative;
+    z-index: 2; /* Ensure the header stays above the background */
+    }
+    .header h1 {
+    margin: 0;
+    font-size: 2.5em;
+    }
+    .navbar {
+    display: flex;
+    justify-content: center;
+    background-color: rgba(58, 49, 83, 0.7); /* Dark purple background with transparency */
+    z-index: 2; /* Ensure the navbar stays above the background */
+    }
+    .navbar a {
+    color: #FEFDFD;
+    padding: 15px;
+    text-decoration: none;
+    }
+    .navbar a:hover {
+    background-color: #5F43B2; /* Bright purple for hover effect */
+    }
+    .main-content {
+    text-align: center;
+    margin-top: 50px;
+    z-index: 2; /* Ensure the main content stays above the background */
+    }
+    button {
+    padding: 10px 15px;
+    background-color: #5F43B2;
+    border: none;
+    color: #FEFDFD;
+    cursor: pointer;
+    margin-right: 10px;
+    border-radius: 5px;
+    }
+    button:hover {
+    background-color: #3A3153;
+    }
+    .footer {
+    text-align: center;
+    background-color: rgba(58, 49, 83, 0.7); /* Purple background for footer */
+    color: #FEFDFD;
+    padding: 10px 0;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+    z-index: 2; /* Ensure the footer stays above the background */
+    }
+// Header Section
+.header
+  h1 Game Sharing Tips &amp; Tricks
+// Navigation Bar
+.navbar
+  a(href='index.html') Home
+  a(href='forum.html') Forum
+  a(href='userpage.html') User
+  a(href='Details_page.html') About Us
+  a(href='guides.html') Guides
+  // Added Guides link
+// Main Content
+.main-content
+  h2#welcomeMessage Welcome to the Website
+  a(href='Login.html')
+    button Go to Log In
+// Footer
+.footer
+  p &copy; 2025 Website Name. All rights reserved.
+script.
+  function changeMessage() {
+  const message = document.getElementById('welcomeMessage');
+  message.innerText = "Welcome to Our Interactive Website!";
+  }

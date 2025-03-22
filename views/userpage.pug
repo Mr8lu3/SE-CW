@@ -1,0 +1,147 @@
+doctype html
+head
+  meta(charset='UTF-8')
+  meta(name='viewport' content='width=device-width, initial-scale=1')
+  title User Profile
+  style.
+    body {
+    background-color: #010101;
+    color: #FEFDFD;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    }
+    /* Header with title */
+    .header {
+    background-color: #3A3153;
+    color: #FEFDFD;
+    padding: 20px;
+    text-align: center;
+    }
+    .header h1 {
+    margin: 0;
+    font-size: 2.5em;
+    }
+    /* Navigation Bar */
+    .navbar {
+    display: flex;
+    justify-content: center;
+    background-color: #3A3153;
+    }
+    .navbar a {
+    color: #FEFDFD;
+    padding: 15px;
+    text-decoration: none;
+    }
+    .navbar a:hover {
+    background-color: #5F43B2;
+    }
+    /* Profile Section */
+    .container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    }
+    .profile-section {
+    background-color: #2a2a2a; /* Grey block */
+    color: #A17EFF; /* Purple text */
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    width: 40%;
+    }
+    .profile-section img {
+    width: 150px;
+    height: 150px;
+    background-color: #2a2a2a;
+    }
+    .badge {
+    background-color: #FEFDFD;
+    color: #3A3153;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-weight: bold;
+    display: inline-block;
+    margin-top: 10px;
+    }
+    .details {
+    margin-top: 10px;
+    }
+    /* Stats Section */
+    .stats-section {
+    background-color: #2a2a2a; /* Grey block */
+    color: #A17EFF; /* Purple text */
+    border-radius: 8px;
+    padding: 20px;
+    width: 55%;
+    }
+    .stats-section h2 {
+    margin: 0;
+    }
+    /* Footer Section */
+    footer {
+    background-color: #3A3153;
+    text-align: center;
+    padding: 10px;
+    margin-top: auto;
+    }
+    footer p {
+    margin: 0;
+    color: #FEFDFD;
+    }
+    /* Settings Button */
+    .settings {
+    text-align: center;
+    margin-top: 20px;
+    }
+    .settings button {
+    background-color: #3A3153;
+    color: #FEFDFD;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1em;
+    cursor: pointer;
+    border-radius: 5px;
+    }
+// Header Section
+.header
+  h1 User Profile
+// Navigation Bar
+.navbar
+  a(href='index.html') Home
+  a(href='forum.html') Forum
+  a(href='userpage.html') User
+  a(href='Details_page.html') About Us
+  a(href='guides.html') Guides
+.container
+  .profile-section
+    img(src='images/Default_Profile_Image' alt='User Profile Picture')
+    .badge Badge
+    .details
+      p
+        | Username: 
+        strong Player123
+      p
+        | Rank: 
+        strong Elite
+  .stats-section
+    h2 Stats for Rating
+    p
+      | Games Played: 
+      strong 150
+    p
+      | Win Rate: 
+      strong 75%
+    p
+      | Achievements: 
+      strong Gold Tier
+.settings
+  button Settings
+// Footer Section
+footer
+  p &copy; 2025 Game Sharing Tips &amp; Tricks
