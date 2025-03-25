@@ -13,7 +13,7 @@ app.use(express.static("static"));
 const db = require('./services/db');
 
 // Create a route for root - /
-app.get("/forum", function(req, res) {
+app.get("/Forum", function(req, res) {
     res.send("xxx");
     var sql = 'select * from forum' ;
     db.query(sql).then(results => {
