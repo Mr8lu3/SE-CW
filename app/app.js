@@ -15,7 +15,17 @@ const db = require('./services/db');
 // Create a route for root - /
 app.get("/", function(req, res) {
     res.send("Hello world!");
+    var sql = 'select * from forum' ;
+    db.query(sql).then(results => {
+        console.log(results);
+        res.json(results)
+    });
 });
+
+app.get("/forum", function(req, res) {
+    res.send("xxx");
+});
+
 
 // Create a route for testing the db
 app.get("/db_test", function(req, res) {
