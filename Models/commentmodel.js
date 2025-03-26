@@ -1,5 +1,7 @@
-// // models/commentModel.js
-// const db = require('../services/db');
+
+// // models/forumModel.js
+// const db = require('../services/db2'); // Update to the correct path
+
 
 // // Get comments for a specific forum post
 // async function getCommentsForPost(postId) {
