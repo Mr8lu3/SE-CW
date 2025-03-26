@@ -1,0 +1,165 @@
+doctype html
+html
+  head
+    meta(charset='UTF-8')
+    meta(name='viewport' content='width=device-width, initial-scale=1.0')
+    title Game Sharing Tips & Tricks
+    style.
+      /* Your existing styles go here */
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        color: #333;
+        margin: 0;
+        padding: 0;
+      }
+      .header {
+        background-color: #3a3053;
+        color: white;
+        text-align: center;
+        padding: 20px;
+        font-size: 2.5em;
+      }
+      .nav-menu {
+        background-color: #3a3053;
+        text-align: center;
+        padding: 10px 0;
+      }
+      .nav-menu a {
+        color: white;
+        text-decoration: none;
+        padding: 0 15px;
+        font-size: 18px;
+      }
+      .nav-menu a:hover {
+        text-decoration: underline;
+      }
+      .forum-container {
+        width: 80%;
+        margin: auto;
+        padding: 20px;
+      }
+      .forum {
+        background-color: #222;
+        padding: 20px;
+        margin-bottom: 20px;
+        border-radius: 10px;
+        color: #fff;
+      }
+      .post {
+        background-color: #333;
+        padding: 15px;
+        margin-top: 20px;
+        border-left: 5px solid #6b47b8;
+        margin-bottom: 15px;
+      }
+      .post-title {
+        font-weight: bold;
+        font-size: 1.5em;
+        color: #fff;
+      }
+      .comment-section {
+        margin-top: 10px;
+        background-color: #444;
+        padding: 10px;
+        border-radius: 5px;
+        margin-top: 15px;
+      }
+      .comment {
+        background-color: #555;
+        padding: 10px;
+        margin-top: 5px;
+        border-radius: 5px;
+      }
+      .comment:hover {
+        background-color: #666;
+      }
+      .footer {
+        background-color: #3a3053;
+        color: white;
+        text-align: center;
+        padding: 10px;
+        position: relative;
+        bottom: 0;
+        width: 100%;
+      }
+
+      .tag {
+        background-color: #6b47b8;
+        color: white;
+        padding: 5px;
+        border-radius: 15px;
+        margin-right: 5px;
+        font-size: 0.9em;
+      }
+
+  body
+    .header Forums
+    .nav-menu
+      a(href="/") Home
+      a(href="/Forum") Forum
+      a(href="/userpage") User
+      a(href="/Details_page") About Us
+      a(href="/Guides") Guides
+
+    .search-bar
+      input#search(type='text' onkeyup='searchForum()' placeholder='Search Forums...')
+      select#tagFilter(onchange='searchForum()')
+        option(value='all') All Topics
+        each forum in forums
+          each tag in forum.tags
+            option(value=tag)= tag
+
+    .forum-container
+      each forum in forums
+        .forum(data-tags=forum.tags.join(' '))
+          h2= forum.title
+          div
+            each tag in forum.tags
+              span.tag= tag
+          each post in forum.posts
+            .post
+              .post-title= post.question
+              .comment-section
+                each comment in post.comments
+                  .comment= comment
+
+    .footer
+      | &copy; 2025 Game Sharing Tips & Tricks. All rights reserved.
+
+  script.
+    // JavaScript for search and tag filter functionality
+    function searchForum() {
+      let input = document.getElementById('search').value.toLowerCase();
+      let tagFilter = document.getElementById('tagFilter').value;
+      let forumElements = document.getElementsByClassName('forum');
+      let postElements = document.getElementsByClassName('post');
+
+      // Loop through each forum to filter by tags and search input
+      for (let i = 0; i < forumElements.length; i++) {
+        let forumText = forumElements[i].innerText.toLowerCase();
+        let forumTags = forumElements[i].getAttribute('data-tags').toLowerCase();
+        let matchesSearch = forumText.includes(input);
+        let matchesTag = tagFilter === 'all' || forumTags.includes(tagFilter.toLowerCase());
+
+        // Hide forum if it doesn't match search or selected tag
+        if (matchesSearch && matchesTag) {
+          forumElements[i].style.display = "block";
+        } else {
+          forumElements[i].style.display = "none";
+        }
+      }
+
+      // Loop through each post inside the filtered forums
+      for (let i = 0; i < postElements.length; i++) {
+        let postText = postElements[i].innerText.toLowerCase();
+        let matchesPostSearch = postText.includes(input);
+
+        // Hide post if it doesn't match search
+        if (matchesPostSearch) {
+          postElements[i].style.display = "block";
+        } else {
+          postElements[i].style.display = "none";
+        }
+      }
+    }

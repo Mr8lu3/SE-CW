@@ -1,55 +1,71 @@
-require("dotenv").config();
+const express = require('express');
+const app = express();
+const db = require('./services/db'); //path to db.js
+const path = require('path');
 
-// Import express.js
-const express = require("express");
+// Set the view engine to Pug
+app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));
 
-// Create express app
-var app = express();
+// Route for the home page
+app.get("/", (req, res) => {
+  res.render("index");
+});
 
-// Add static files location
-app.use(express.static("static"));
+app.get('/Forum', async (req, res) => {
+  try {
+    // Query to get forum posts with their comments and tags
+    const forumPosts = await db.query(`
+      SELECT forum.post_id, forum.forum_title, forum.content AS post_content,
+             forum_comments.comment_id, forum_comments.content AS comment_content,
+             forum.forum_tags
+      FROM forum
+      LEFT JOIN forum_comments ON forum.post_id = forum_comments.post_id
+      ORDER BY forum.post_id ASC, forum_comments.created_at ASC;
+    `);
+    
+    // Organize the data into a format usable by the view
+    const forums = [];
 
-// Get the functions in the db.js file to use
-const db = require('./services/db');
+    forumPosts.forEach(post => {
+      let forum = forums.find(f => f.id === post.post_id);
+      if (!forum) {
+        forum = { id: post.post_id, title: post.forum_title, tags: post.forum_tags.split(','), posts: [] };
+        forums.push(forum);
+      }
 
-// Create a route for root - /
-app.get("/Forum", function(req, res) {
-    res.send("xxx");
-    var sql = 'select * from forum' ;
-    db.query(sql).then(results => {
-        console.log(results);
-        res.json(results)
+      let forumPost = forum.posts.find(p => p.question === post.post_content);
+      if (!forumPost) {
+        forumPost = { question: post.post_content, comments: [] };
+        forum.posts.push(forumPost);
+      }
+
+      if (post.comment_id) {
+        forumPost.comments.push(post.comment_content);
+      }
     });
+
+    res.render('Forum', { forums });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
 });
 
-// Create a route for testing the db
-app.get("/db_test", function(req, res) {
-    // Assumes a table called test_table exists in your database
-    sql = 'select * from test_table';
-    db.query(sql).then(results => {
-        console.log(results);
-        res.send(results)
-    });
+// Routes for other pages
+app.get("/Guides", (req, res) => {
+    res.render("Guides");
 });
 
-// Create a route for /goodbye
-// Responds to a 'GET' request
-app.get("/goodbye", function(req, res) {
-    res.send("Goodbye world!");
+app.get("/Details_page", (req, res) => {
+    res.render("Details_page");
 });
 
-// Create a dynamic route for /hello/<name>, where name is any value provided by user
-// At the end of the URL
-// Responds to a 'GET' request
-app.get("/hello/:name", function(req, res) {
-    // req.params contains any parameters in the request
-    // We can examine it in the console for debugging purposes
-    console.log(req.params);
-    //  Retrieve the 'name' parameter and use it in a dynamically generated page
-    res.send("Hello " + req.params.name);
+app.get("/userpage", (req, res) => {
+    res.render("userpage");
 });
 
-// Start server on port 3000
-app.listen(3000,function(){
-    console.log(`Server running at http://127.0.0.1:3000/`);
+// Start the server
+app.listen(3000, () => {
+  console.log("Forum app running at http://localhost:3000");
 });
