@@ -8,7 +8,7 @@ html
       /* Your existing styles go here */
       body {
         font-family: Arial, sans-serif;
-        background-color: #f4f4f4;
+        background-color:rgb(60, 58, 67);
         color: #333;
         margin: 0;
         padding: 0;
@@ -124,10 +124,33 @@ html
                 each comment in post.comments
                   .comment= comment
 
+                // Static comment form outside the comment section
+                form(id="commentForm" method="post" onsubmit="addStaticComment(event, '#commentInput', this)") 
+                  input#commentInput(type="text" placeholder="Add a static comment...") 
+                  button(type="submit") Add Comment
+
     .footer
       | &copy; 2025 Game Sharing Tips & Tricks. All rights reserved.
 
   script.
+    // JavaScript for adding static comments and repositioning input
+    function addStaticComment(event, inputId, formElement) {
+      event.preventDefault(); // Prevent form from reloading the page
+      const commentText = document.querySelector(inputId).value.trim();
+      if (commentText) {
+        const commentSection = formElement.closest('.comment-section');
+        const newComment = document.createElement('div');
+        newComment.classList.add('comment');
+        newComment.textContent = commentText;
+        commentSection.appendChild(newComment);
+
+        // Move the "Add a comment" form below the latest comment
+        commentSection.appendChild(formElement);
+
+        document.querySelector(inputId).value = ''; // Clear input field
+      }
+    }
+
     // JavaScript for search and tag filter functionality
     function searchForum() {
       let input = document.getElementById('search').value.toLowerCase();

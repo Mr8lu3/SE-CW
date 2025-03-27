@@ -1,7 +1,11 @@
-const express = require('express'); 
+const express = require('express');
+const bodyParser = require('body-parser');
 const app = express();
-const db = require('./services/db'); //path to db.js
+const db = require('./services/db'); // Ensure the path to db.js is correct
 const path = require('path');
+
+// Middleware for parsing form data
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // Set the view engine to Pug
 app.set('view engine', 'pug');
@@ -12,6 +16,7 @@ app.get("/", (req, res) => {
   res.render("index");
 });
 
+// Route to display forum page
 app.get('/Forum', async (req, res) => {
   try {
     // Query to get forum posts with their comments and tags
@@ -52,17 +57,34 @@ app.get('/Forum', async (req, res) => {
   }
 });
 
+// Handle comment submission
+app.post('/Forum', async (req, res) => {
+  const { comment, postId } = req.body; // Get the comment and postId from the form
+
+  try {
+    // Insert the comment into the database
+    await db.query('INSERT INTO forum_comments (post_id, content) VALUES (?, ?)', [postId, comment]);
+
+    // Redirect back to the forum page after adding the comment
+    res.redirect('/Forum');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+
 // Routes for other pages
 app.get("/Guides", (req, res) => {
-    res.render("Guides");
+  res.render("Guides");
 });
 
 app.get("/Details_page", (req, res) => {
-    res.render("Details_page");
+  res.render("Details_page");
 });
 
 app.get("/userpage", (req, res) => {
-    res.render("userpage");
+  res.render("userpage");
 });
 
 // Start the server
