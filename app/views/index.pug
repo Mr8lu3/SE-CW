@@ -1,96 +1,191 @@
 doctype html
-head
-  meta(charset='UTF-8')
-  meta(name='viewport' content='width=device-width, initial-scale=1.0')
-  title Home Page
-  style.
-    body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    background-color: #010101; /* Black background */
-    color: #FEFDFD; /* White text */
-    background-image: url('/Users/atharva/SE-CW-2/images/image1.jpg'); /* Path to the image on your system */
-    background-size: cover; /* Ensure the image covers the full screen */
-    background-position: center; /* Center the background image */
-    background-repeat: no-repeat; /* Prevent the image from repeating */
-    background-attachment: fixed; /* Keep the image fixed on scroll */
-    height: 100vh; /* Ensure the body takes the full height of the viewport */
-    }
-    /* Header with title */
-    .header {
-    background-color: rgba(58, 49, 83, 0.7); /* Purple background with transparency */
-    color: #FEFDFD; /* White text */
-    padding: 20px;
-    text-align: center;
-    position: relative;
-    z-index: 2; /* Ensure the header stays above the background */
-    }
-    .header h1 {
-    margin: 0;
-    font-size: 2.5em;
-    }
-    .navbar {
-    display: flex;
-    justify-content: center;
-    background-color: rgba(58, 49, 83, 0.7); /* Dark purple background with transparency */
-    z-index: 2; /* Ensure the navbar stays above the background */
-    }
-    .navbar a {
-    color: #FEFDFD;
-    padding: 15px;
-    text-decoration: none;
-    }
-    .navbar a:hover {
-    background-color: #5F43B2; /* Bright purple for hover effect */
-    }
-    .main-content {
-    text-align: center;
-    margin-top: 50px;
-    z-index: 2; /* Ensure the main content stays above the background */
-    }
-    button {
-    padding: 10px 15px;
-    background-color: #5F43B2;
-    border: none;
-    color: #FEFDFD;
-    cursor: pointer;
-    margin-right: 10px;
-    border-radius: 5px;
-    }
-    button:hover {
-    background-color: #3A3153;
-    }
-    .footer {
-    text-align: center;
-    background-color: rgba(58, 49, 83, 0.7); /* Purple background for footer */
-    color: #FEFDFD;
-    padding: 10px 0;
-    position: fixed;
-    width: 100%;
-    bottom: 0;
-    z-index: 2; /* Ensure the footer stays above the background */
-    }
-// Header Section
-.header
-  h1 Game Sharing Tips &amp; Tricks
-// Navigation Bar
-.navbar
-  a(href="/") Home
-  a(href="/Forum") Forum
-  a(href="/userpage") User
-  a(href="/Details_page") About Us
-  a(href="/Guides") Guides
-  // Added Guides link
-// Main Content
-.main-content
-  h2#welcomeMessage Welcome to the Website
-  a(href='/Login')
-    button Go to Log In
-// Footer
-.footer
-  p &copy; 2025 Website Name. All rights reserved.
-script.
-  function changeMessage() {
-  const message = document.getElementById('welcomeMessage');
-  message.innerText = "Welcome to Our Interactive Website!";
-  }
+html(lang="en")
+  head
+    meta(charset='UTF-8')
+    meta(name='viewport' content='width=device-width, initial-scale=1.0')
+    title Home Page
+    // Add Three.js and Vanta.js scripts
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js")
+    script(src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.fog.min.js")
+    style.
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        background-color: #010101; /* Black background */
+        color: #FEFDFD; /* White text */
+        height: 100vh; /* Ensure the body takes the full height of the viewport */
+        overflow-x: hidden;
+      }
+
+      #vanta-background {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+      }
+
+      /* Header with title - Make it larger */
+      .header {
+        background-color: rgba(0, 0, 0, 0.5); /* More translucent black background */
+        color: #FEFDFD; /* White text */
+        padding: 25px 20px; /* Increased top/bottom padding */
+        text-align: center;
+        position: relative; 
+        z-index: 100; /* Ensure the header stays above everything */
+        backdrop-filter: blur(5px); /* Apply a blur effect for better text readability */
+      }
+      
+      .header h1 {
+        margin: 0;
+        font-size: 2.5em;
+        margin-bottom: 15px; /* Add space between header text and navbar */
+        text-shadow: 0 0 5px rgba(0, 0, 0, 0.5); /* Text shadow for better visibility */
+      }
+      
+      /* Navigation styling with improved visibility and translucency */
+      .navbar-container {
+        position: relative;
+        width: 100%;
+        z-index: 100; /* Very high z-index */
+      }
+      
+      .navbar {
+        display: flex;
+        justify-content: center;
+        background-color: rgba(58, 49, 83, 0.6); /* More translucent purple */
+        width: 100%;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Shadow for depth */
+        border-top: 1px solid rgba(255, 255, 255, 0.1); /* Subtle top border */
+        border-bottom: 1px solid rgba(0, 0, 0, 0.2); /* Subtle bottom border */
+        backdrop-filter: blur(5px); /* Apply a blur effect for better text readability */
+      }
+      
+      .navbar a {
+        color: #FEFDFD;
+        padding: 15px 25px; /* Wider padding for easier clicking */
+        text-decoration: none;
+        font-weight: bold; /* Make text bolder */
+        transition: all 0.3s ease;
+        font-size: 1.1em; /* Slightly larger font */
+        letter-spacing: 0.5px; /* Better readability */
+        text-shadow: 0 0 4px rgba(0, 0, 0, 0.7); /* Text shadow for better visibility */
+        position: relative; /* For the hover effect */
+      }
+      
+      .navbar a:hover {
+        background-color: rgba(95, 67, 178, 0.7); /* Translucent purple for hover effect */
+        box-shadow: 0 0 15px rgba(95, 67, 178, 0.5); /* Glow effect on hover */
+        transform: translateY(-2px); /* Slight lift effect */
+      }
+      
+      .navbar a:active {
+        transform: translateY(1px); /* Press effect */
+      }
+      
+      .main-content {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 65vh; /* Reduced slightly to account for larger header */
+        text-align: center;
+        z-index: 2; /* Ensure the main content stays above the background */
+        position: relative;
+        margin-top: 30px; /* Add more space below navbar */
+      }
+      
+      .welcome-title {
+        font-size: 3.5em;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      }
+      
+      .welcome-subtitle {
+        font-size: 1.5em;
+        margin-bottom: 40px;
+        max-width: 800px;
+        line-height: 1.4;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+      }
+      
+      button {
+        padding: 15px 30px;
+        background-color: #5F43B2;
+        border: none;
+        color: #FEFDFD;
+        cursor: pointer;
+        margin-top: 20px;
+        border-radius: 5px;
+        font-size: 1.2em;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+      }
+      
+      button:hover {
+        background-color: #3A3153;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.4);
+      }
+      
+      button:active {
+        transform: translateY(1px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      }
+      
+      .footer {
+        text-align: center;
+        background-color: rgba(0, 0, 0, 0.5); /* More translucent footer */
+        color: #FEFDFD;
+        padding: 10px 0;
+        position: fixed;
+        width: 100%;
+        bottom: 0;
+        z-index: 2; /* Ensure the footer stays above the background */
+        backdrop-filter: blur(5px); /* Apply a blur effect for better text readability */
+      }
+  body.dark-theme
+    // Vanta background div
+    #vanta-background
+
+    // Header Section with navbar included
+    .header
+      h1 Game Sharing Tips & Tricks
+      .navbar-container
+        .navbar
+          a(href='/') Home
+          a(href='/Forum') Forum
+          a(href='/userpage') User
+          a(href='/Details_page') About Us
+          a(href='/Guides') Guides
+
+    // Main Content
+    .main-content
+      h2.welcome-title Welcome to the Gaming Tips
+      p.welcome-subtitle Join thousands of gamers improving their skills daily here with us!
+      a(href='/Login')
+        button Go to Log In
+
+    // Footer
+    .footer
+      p &copy; 2025 Website Name. All rights reserved.
+
+    // Vanta FOG effect initialization
+    script.
+      // Initialize Vanta fog effect
+      VANTA.FOG({
+        el: "#vanta-background",
+        mouseControls: true,
+        touchControls: true,
+        gyroControls: false,
+        minHeight: 200.00,
+        minWidth: 200.00,
+        highlightColor: 0x5F43B2,
+        midtoneColor: 0x3A3153,
+        lowlightColor: 0x010101,
+        baseColor: 0x010101,
+        blurFactor: 0.60,
+        speed: 1.50,
+        zoom: 0.80
+      });
