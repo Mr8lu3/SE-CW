@@ -1,108 +1,280 @@
 doctype html
-html
+html(lang="en")
   head
     meta(charset='UTF-8')
     meta(name='viewport' content='width=device-width, initial-scale=1.0')
-    title Game Sharing Tips & Tricks
+    title Forums - Game Sharing Tips & Tricks
+    // Add Three.js and Vanta.js scripts
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js")
+    script(src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.fog.min.js")
     style.
-      /* Your existing styles go here */
       body {
         font-family: Arial, sans-serif;
-        background-color:rgb(60, 58, 67);
-        color: #333;
         margin: 0;
-        padding: 0;
+        background-color: #010101; /* Black background */
+        color: #FEFDFD; /* White text */
+        min-height: 100vh; /* Ensure the body takes the full height of the viewport */
+        overflow-x: hidden;
       }
+
+      #vanta-background {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+      }
+
+      /* Header with title */
       .header {
-        background-color: #3a3053;
-        color: white;
+        background-color: rgba(0, 0, 0, 0.5); /* More translucent black background */
+        color: #FEFDFD; /* White text */
+        padding: 25px 20px; /* Increased top/bottom padding */
         text-align: center;
-        padding: 20px;
+        position: relative; 
+        z-index: 100; /* Ensure the header stays above everything */
+        backdrop-filter: blur(5px); /* Apply a blur effect for better text readability */
+      }
+      
+      .header h1 {
+        margin: 0;
         font-size: 2.5em;
+        margin-bottom: 15px; /* Add space between header text and navbar */
+        text-shadow: 0 0 5px rgba(0, 0, 0, 0.5); /* Text shadow for better visibility */
       }
-      .nav-menu {
-        background-color: #3a3053;
-        text-align: center;
-        padding: 10px 0;
+      
+      /* Navigation styling with improved visibility and translucency */
+      .navbar-container {
+        position: relative;
+        width: 100%;
+        z-index: 100; /* Very high z-index */
       }
-      .nav-menu a {
-        color: white;
+      
+      .navbar {
+        display: flex;
+        justify-content: center;
+        background-color: rgba(58, 49, 83, 0.6); /* More translucent purple */
+        width: 100%;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Shadow for depth */
+        border-top: 1px solid rgba(255, 255, 255, 0.1); /* Subtle top border */
+        border-bottom: 1px solid rgba(0, 0, 0, 0.2); /* Subtle bottom border */
+        backdrop-filter: blur(5px); /* Apply a blur effect for better text readability */
+      }
+      
+      .navbar a {
+        color: #FEFDFD;
+        padding: 15px 25px; /* Wider padding for easier clicking */
         text-decoration: none;
-        padding: 0 15px;
-        font-size: 18px;
+        font-weight: bold; /* Make text bolder */
+        transition: all 0.3s ease;
+        font-size: 1.1em; /* Slightly larger font */
+        letter-spacing: 0.5px; /* Better readability */
+        text-shadow: 0 0 4px rgba(0, 0, 0, 0.7); /* Text shadow for better visibility */
+        position: relative; /* For the hover effect */
       }
-      .nav-menu a:hover {
-        text-decoration: underline;
+      
+      .navbar a:hover {
+        background-color: rgba(95, 67, 178, 0.7); /* Translucent purple for hover effect */
+        box-shadow: 0 0 15px rgba(95, 67, 178, 0.5); /* Glow effect on hover */
+        transform: translateY(-2px); /* Slight lift effect */
       }
+      
+      .navbar a:active {
+        transform: translateY(1px); /* Press effect */
+      }
+
+      /* Search bar */
+      .search-container {
+        display: flex;
+        justify-content: center;
+        padding: 20px;
+        position: relative;
+        z-index: 10;
+        width: 80%;
+        margin: 20px auto 0;
+      }
+
+      .search-container input, .search-container select {
+        padding: 12px 15px;
+        margin: 0 10px;
+        border-radius: 5px;
+        border: none;
+        background-color: rgba(30, 30, 40, 0.8);
+        color: #FEFDFD;
+        backdrop-filter: blur(5px);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s ease;
+      }
+
+      .search-container input {
+        flex-grow: 1;
+        max-width: 500px;
+      }
+
+      .search-container input:focus, .search-container select:focus {
+        outline: none;
+        box-shadow: 0 0 10px rgba(95, 67, 178, 0.6);
+      }
+
+      .search-container select {
+        min-width: 150px;
+        cursor: pointer;
+      }
+
+      .search-container select option {
+        background-color: #222;
+        color: #FEFDFD;
+      }
+
+      /* Forum container */
       .forum-container {
         width: 80%;
-        margin: auto;
+        margin: 20px auto 80px;
         padding: 20px;
+        position: relative;
+        z-index: 10;
       }
+
       .forum {
-        background-color: #222;
+        background-color: rgba(34, 34, 34, 0.7);
         padding: 20px;
         margin-bottom: 20px;
         border-radius: 10px;
         color: #fff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(5px);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
       }
+
+      .forum:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+      }
+
       .post {
-        background-color: #333;
+        background-color: rgba(51, 51, 51, 0.7);
         padding: 15px;
         margin-top: 20px;
         border-left: 5px solid #6b47b8;
         margin-bottom: 15px;
+        border-radius: 0 5px 5px 0;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
       }
+
       .post-title {
         font-weight: bold;
         font-size: 1.5em;
         color: #fff;
+        margin-bottom: 10px;
+        text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
       }
+
       .comment-section {
         margin-top: 10px;
-        background-color: #444;
+        background-color: rgba(68, 68, 68, 0.7);
         padding: 10px;
         border-radius: 5px;
         margin-top: 15px;
       }
+
       .comment {
-        background-color: #555;
+        background-color: rgba(85, 85, 85, 0.7);
         padding: 10px;
         margin-top: 5px;
         border-radius: 5px;
+        transition: background-color 0.3s ease;
       }
+
       .comment:hover {
-        background-color: #666;
+        background-color: rgba(102, 102, 102, 0.7);
       }
-      .footer {
-        background-color: #3a3053;
-        color: white;
-        text-align: center;
+
+      /* Comment form */
+      #commentForm {
+        margin-top: 15px;
+        display: flex;
+        gap: 10px;
+      }
+
+      #commentInput {
+        flex-grow: 1;
         padding: 10px;
-        position: relative;
-        bottom: 0;
-        width: 100%;
+        background-color: rgba(30, 30, 40, 0.8);
+        border: 1px solid rgba(95, 67, 178, 0.5);
+        border-radius: 5px;
+        color: #fff;
+      }
+
+      #commentForm button {
+        padding: 10px 15px;
+        background-color: #5F43B2;
+        border: none;
+        color: #FEFDFD;
+        cursor: pointer;
+        border-radius: 5px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+      }
+
+      #commentForm button:hover {
+        background-color: #3A3153;
+        transform: translateY(-2px);
+        box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
+      }
+
+      #commentForm button:active {
+        transform: translateY(1px);
       }
 
       .tag {
-        background-color: #6b47b8;
+        display: inline-block;
+        background-color: rgba(107, 71, 184, 0.7);
         color: white;
-        padding: 5px;
+        padding: 5px 10px;
         border-radius: 15px;
-        margin-right: 5px;
+        margin-right: 8px;
+        margin-bottom: 8px;
         font-size: 0.9em;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(5px);
       }
 
-  body
-    .header Forums
-    .nav-menu
-      a(href="/") Home
-      a(href="/Forum") Forum
-      a(href="/userpage") User
-      a(href="/Details_page") About Us
-      a(href="/Guides") Guides
+      .tag:hover {
+        background-color: rgba(95, 67, 178, 0.9);
+        transform: translateY(-2px);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+      }
 
-    .search-bar
+      .footer {
+        text-align: center;
+        background-color: rgba(0, 0, 0, 0.5); /* More translucent footer */
+        color: #FEFDFD;
+        padding: 10px 0;
+        position: fixed;
+        width: 100%;
+        bottom: 0;
+        z-index: 10; /* Ensure the footer stays above the background */
+        backdrop-filter: blur(5px); /* Apply a blur effect for better text readability */
+      }
+
+  body.dark-theme
+    // Vanta background div
+    #vanta-background
+
+    // Header Section with navbar included
+    .header
+      h1 Forums
+      .navbar-container
+        .navbar
+          a(href='/') Home
+          a(href='/Forum') Forum
+          a(href='/userpage') User
+          a(href='/Details_page') About Us
+          a(href='/Guides') Guides
+
+    // Search bar and filter
+    .search-container
       input#search(type='text' onkeyup='searchForum()' placeholder='Search Forums...')
       select#tagFilter(onchange='searchForum()')
         option(value='all') All Topics
@@ -110,6 +282,7 @@ html
           each tag in forum.tags
             option(value=tag)= tag
 
+    // Forum container
     .forum-container
       each forum in forums
         .forum(data-tags=forum.tags.join(' '))
@@ -118,71 +291,150 @@ html
             each tag in forum.tags
               span.tag= tag
           each post in forum.posts
-            .post
+            .post(data-post-id=forum.id)
               .post-title= post.question
               .comment-section
                 each comment in post.comments
                   .comment= comment
 
-                // Static comment form outside the comment section
-                form(id="commentForm" method="post" onsubmit="addStaticComment(event, '#commentInput', this)") 
-                  input#commentInput(type="text" placeholder="Add a static comment...") 
-                  button(type="submit") Add Comment
+                // Updated comment form with helpful instructions
+                form.comment-form(action="/comments" method="post") 
+                  input(type="hidden" name="post_id" value=forum.id)
+                  input.comment-input(type="text" name="content" placeholder="Type your comment here..." required)
+                  button(type="submit") Post Comment
+                  span.form-status
+                div.comment-instructions
+                  small Comments are saved to the database and will persist between page refreshes.
 
+    // Footer
     .footer
-      | &copy; 2025 Game Sharing Tips & Tricks. All rights reserved.
+      p &copy; 2025 Game Sharing Tips & Tricks. All rights reserved.
 
-  script.
-    // JavaScript for adding static comments and repositioning input
-    function addStaticComment(event, inputId, formElement) {
-      event.preventDefault(); // Prevent form from reloading the page
-      const commentText = document.querySelector(inputId).value.trim();
-      if (commentText) {
-        const commentSection = formElement.closest('.comment-section');
-        const newComment = document.createElement('div');
-        newComment.classList.add('comment');
-        newComment.textContent = commentText;
-        commentSection.appendChild(newComment);
+    // Initialize Vanta FOG effect and handle comments
+    script.
+      // Initialize Vanta fog effect
+      document.addEventListener('DOMContentLoaded', function() {
+        VANTA.FOG({
+          el: "#vanta-background",
+          mouseControls: true,
+          touchControls: true,
+          gyroControls: false,
+          minHeight: 200.00,
+          minWidth: 200.00,
+          highlightColor: 0x5F43B2,
+          midtoneColor: 0x3A3153,
+          lowlightColor: 0x010101,
+          baseColor: 0x010101,
+          blurFactor: 0.60,
+          speed: 1.50,
+          zoom: 0.80
+        });
 
-        // Move the "Add a comment" form below the latest comment
-        commentSection.appendChild(formElement);
+        const commentForms = document.querySelectorAll('.comment-form');
+        
+        commentForms.forEach(form => {
+          form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const postId = this.querySelector('input[name="post_id"]').value;
+            const content = this.querySelector('input[name="content"]').value.trim();
+            const commentSection = this.closest('.comment-section');
+            const statusSpan = this.querySelector('.form-status');
+            
+            if (!content) return;
+            
+            console.log(`Submitting comment for post ID: ${postId}`);
+            console.log(`Comment content: ${content}`);
+            
+            // Show loading status
+            statusSpan.textContent = 'Saving comment...';
+            statusSpan.style.color = '#8C6EFF';
+            
+            // Create new comment element for immediate feedback
+            const newComment = document.createElement('div');
+            newComment.classList.add('comment');
+            newComment.textContent = content;
+            newComment.style.opacity = '0.7'; // Show it's pending
+            commentSection.insertBefore(newComment, form);
+            
+            // Clear the input field
+            this.querySelector('input[name="content"]').value = '';
+            
+            // Send the data to the server
+            fetch('/comments', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                post_id: postId,
+                content: content
+              })
+            })
+            .then(response => {
+              console.log('Response status:', response.status);
+              return response.json();
+            })
+            .then(data => {
+              console.log('Response data:', data);
+              if (data.success) {
+                // Comment saved successfully
+                newComment.style.opacity = '1';
+                statusSpan.textContent = 'Comment saved!';
+                statusSpan.style.color = 'green';
+                setTimeout(() => {
+                  statusSpan.textContent = '';
+                }, 3000);
+              } else {
+                // Server returned an error
+                newComment.remove();
+                statusSpan.textContent = 'Error: ' + data.message;
+                statusSpan.style.color = 'red';
+                console.error('Server error:', data.message);
+              }
+            })
+            .catch(error => {
+              console.error('Error saving comment:', error);
+              newComment.remove();
+              statusSpan.textContent = 'Error saving comment. Please try again.';
+              statusSpan.style.color = 'red';
+            });
+          });
+        });
+      });
 
-        document.querySelector(inputId).value = ''; // Clear input field
-      }
-    }
+      // JavaScript for search and tag filter functionality
+      function searchForum() {
+        let input = document.getElementById('search').value.toLowerCase();
+        let tagFilter = document.getElementById('tagFilter').value;
+        let forumElements = document.getElementsByClassName('forum');
+        let postElements = document.getElementsByClassName('post');
 
-    // JavaScript for search and tag filter functionality
-    function searchForum() {
-      let input = document.getElementById('search').value.toLowerCase();
-      let tagFilter = document.getElementById('tagFilter').value;
-      let forumElements = document.getElementsByClassName('forum');
-      let postElements = document.getElementsByClassName('post');
+        // Loop through each forum to filter by tags and search input
+        for (let i = 0; i < forumElements.length; i++) {
+          let forumText = forumElements[i].innerText.toLowerCase();
+          let forumTags = forumElements[i].getAttribute('data-tags').toLowerCase();
+          let matchesSearch = forumText.includes(input);
+          let matchesTag = tagFilter === 'all' || forumTags.includes(tagFilter.toLowerCase());
 
-      // Loop through each forum to filter by tags and search input
-      for (let i = 0; i < forumElements.length; i++) {
-        let forumText = forumElements[i].innerText.toLowerCase();
-        let forumTags = forumElements[i].getAttribute('data-tags').toLowerCase();
-        let matchesSearch = forumText.includes(input);
-        let matchesTag = tagFilter === 'all' || forumTags.includes(tagFilter.toLowerCase());
+          // Hide forum if it doesn't match search or selected tag
+          if (matchesSearch && matchesTag) {
+            forumElements[i].style.display = "block";
+          } else {
+            forumElements[i].style.display = "none";
+          }
+        }
 
-        // Hide forum if it doesn't match search or selected tag
-        if (matchesSearch && matchesTag) {
-          forumElements[i].style.display = "block";
-        } else {
-          forumElements[i].style.display = "none";
+        // Loop through each post inside the filtered forums
+        for (let i = 0; i < postElements.length; i++) {
+          let postText = postElements[i].innerText.toLowerCase();
+          let matchesPostSearch = postText.includes(input);
+
+          // Hide post if it doesn't match search
+          if (matchesPostSearch) {
+            postElements[i].style.display = "block";
+          } else {
+            postElements[i].style.display = "none";
+          }
         }
       }
-
-      // Loop through each post inside the filtered forums
-      for (let i = 0; i < postElements.length; i++) {
-        let postText = postElements[i].innerText.toLowerCase();
-        let matchesPostSearch = postText.includes(input);
-
-        // Hide post if it doesn't match search
-        if (matchesPostSearch) {
-          postElements[i].style.display = "block";
-        } else {
-          postElements[i].style.display = "none";
-        }
-      }
-    }

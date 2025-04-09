@@ -1,11 +1,39 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+let session;
+try {
+  session = require('express-session');
+  console.log('Express-session loaded successfully');
+} catch (error) {
+  console.error('Error loading express-session:', error.message);
+  // Provide a fallback simple session object if the module is missing
+  session = function(options) {
+    return function(req, res, next) {
+      req.session = req.session || {};
+      next();
+    };
+  };
+}
+
 const app = express();
 const db = require('./services/db'); // Ensure the path to db.js is correct
 const path = require('path');
+const forumController = require('../Controllers/forumcontroller');
+const userController = require('../Controllers/usercontroller');
+const UserModel = require('../Models/usermodel');
+
+// Initialize session middleware
+app.use(session({
+  secret: 'gaming-tips-secret-2025',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { maxAge: 3600000 } // 1 hour session expiry
+}));
 
 // Middleware for parsing form data
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json()); // Add JSON parsing for API requests
+
 // Serve static files
 app.use(express.static(path.join(__dirname, '../images')));
 
@@ -13,125 +41,75 @@ app.use(express.static(path.join(__dirname, '../images')));
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 
+// Middleware to make session user available to all templates
+app.use((req, res, next) => {
+  res.locals.user = req.session.user || null;
+  res.locals.loggedIn = req.session.loggedIn || false;
+  next();
+});
+
+// Delay database initialization to give MySQL container time to start properly
+console.log('Waiting for database to be ready...');
+setTimeout(async () => {
+  try {
+    // First ensure database connection is established with retries
+    const dbConnected = await db.initializePool(10, 3000); // 10 attempts, 3 second delay
+    
+    if (dbConnected) {
+      console.log('Database connection established, initializing user table...');
+      // Initialize user table and create admin user if needed
+      try {
+        await UserModel.initializeUserTable();
+        console.log('User table initialized successfully');
+      } catch (error) {
+        console.error('Error initializing user table:', error);
+        console.log('Will continue without user authentication features');
+      }
+    } else {
+      console.log('Database connection could not be established, some features may not work');
+    }
+  } catch (error) {
+    console.error('Error during startup:', error);
+  }
+}, 5000); // Wait 5 seconds before trying to initialize
+
 // Route for the home page
 app.get("/", (req, res) => {
   res.render("index");
 });
 
-// Route to display forum page
-app.get('/Forum', async (req, res) => {
-  try {
-    // First, verify database connection
-    console.log("Attempting database connection for Forum page...");
-    
-    // Test database connection with error details
-    try {
-      const testQuery = await db.query('SELECT 1 as test');
-      console.log("Database connection successful:", testQuery);
-    } catch (dbError) {
-      console.error("Database connection failed:", dbError);
-      throw new Error(`Database connection error: ${dbError.message}`);
-    }
-    
-    // Check if forum table exists
-    try {
-      const tableCheck = await db.query("SHOW TABLES LIKE 'forum'");
-      console.log("Forum table check:", tableCheck.length ? "Table exists" : "Table does not exist");
-      
-      if (!tableCheck.length) {
-        throw new Error("The 'forum' table does not exist in the database");
-      }
-    } catch (tableError) {
-      console.error("Error checking forum table:", tableError);
-      throw new Error(`Table check error: ${tableError.message}`);
-    }
-
-    // Now attempt to fetch forum data
-    const forumPosts = await db.query(`
-      SELECT forum.post_id, forum.forum_title, forum.content AS post_content,
-             forum_comments.comment_id, forum_comments.content AS comment_content,
-             forum.forum_tags
-      FROM forum
-      LEFT JOIN forum_comments ON forum.post_id = forum_comments.post_id
-      ORDER BY forum.post_id ASC, forum_comments.created_at ASC;
-    `);
-    
-    console.log(`Retrieved ${forumPosts.length} forum posts`);
-    
-    // Organize the data into a format usable by the view
-    const forums = [];
-
-    forumPosts.forEach(post => {
-      let forum = forums.find(f => f.id === post.post_id);
-      if (!forum) {
-        // Handle potential null forum_tags
-        const tags = post.forum_tags ? post.forum_tags.split(',') : [];
-        forum = { id: post.post_id, title: post.forum_title, tags: tags, posts: [] };
-        forums.push(forum);
-      }
-
-      let forumPost = forum.posts.find(p => p.question === post.post_content);
-      if (!forumPost) {
-        forumPost = { question: post.post_content, comments: [] };
-        forum.posts.push(forumPost);
-      }
-
-      if (post.comment_id) {
-        forumPost.comments.push(post.comment_content);
-      }
-    });
-
-    res.render('Forum', { forums });
-  } catch (error) {
-    console.error("Forum error:", error);
-    // Provide a more user-friendly error page with detailed information for development
-    res.status(500).render('error', { 
-      message: 'Error loading forum content: ' + error.message,
-      error: {
-        status: 500,
-        stack: process.env.NODE_ENV === 'development' ? error.stack : ''
-      }
-    });
-  }
+// Auth routes
+app.get('/Login', (req, res) => {
+  res.render('Login');
 });
 
-// Handle comment submission
-app.post('/Forum', async (req, res) => {
-  const { comment, postId } = req.body; // Get the comment and postId from the form
+app.post('/login', userController.login);
 
-  try {
-    // Insert the comment into the database
-    await db.query('INSERT INTO forum_comments (post_id, content) VALUES (?, ?)', [postId, comment]);
-
-    // Redirect back to the forum page after adding the comment
-    res.redirect('/Forum');
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Internal Server Error');
-  }
+app.get('/signup', (req, res) => {
+  res.render('signup');
 });
 
-// Add route for Login page
-app.get("/Login", (req, res) => {
-  res.render("Login");
-});
+app.post('/signup', userController.register);
 
-// Routes for other pages
+app.get('/logout', userController.logout);
+
+// Admin routes
+app.get('/admin', userController.adminDashboard);
+
+// Protected user profile route
+app.get('/userpage', userController.getUserProfile);
+
+// Forum routes
+app.get('/Forum', forumController.getAllForums);
+app.post('/comments', forumController.addComment);
+
+// Other page routes
 app.get("/Guides", (req, res) => {
   res.render("Guides");
 });
 
 app.get("/Details_page", (req, res) => {
   res.render("Details_page");
-});
-
-app.get("/userpage", (req, res) => {
-  res.render("userpage");
-});
-
-// Add route for signup page
-app.get("/signup", (req, res) => {
-  res.render("signup");
 });
 
 // Start the server

@@ -5,24 +5,59 @@ services:
       context: ./
     volumes:
       - .:/src
-    command: supervisor -e  'js,pug,html' index.js
+      - /src/node_modules
+    command: supervisor -e 'js,pug,html' app/app.js
     ports:
       - "3000:3000"
     depends_on:
       - db
+    environment:
+      - MYSQL_HOST=db
+      # Removed MYSQL_USER=root to avoid conflicts
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_PASSWORD=password
+      - MYSQL_DATABASE=Game-Tips-DB
+      - DB_HOST=db
+      - DB_PORT=3306
+    restart: always
+    networks:
+      - app-network
+
   db:
-    image: mysql
+    image: mysql:8.0
     restart: always
     env_file:
       - ./.env
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=Game-Tips-DB
+      # Don't set MYSQL_USER for root - this was causing the error
     ports:
       - "3306:3306"
     volumes:
-      - ./db:/var/lib/mysql
+      - db-data:/var/lib/mysql
+      - ./Database/gamingtips.sql:/docker-entrypoint-initdb.d/gamingtips.sql
+    command: --default-authentication-plugin=mysql_native_password
+    networks:
+      - app-network
+
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest
     restart: always
-    env_file:
-      - ./.env
+    environment:
+      - PMA_HOST=db
+      - PMA_PORT=3306
+      - MYSQL_ROOT_PASSWORD=password
     ports:
       - "8082:80"
+    depends_on:
+      - db
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  db-data:

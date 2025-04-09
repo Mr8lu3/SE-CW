@@ -1,274 +1,403 @@
 doctype html
-head
-  meta(charset='UTF-8')
-  meta(name='viewport' content='width=device-width, initial-scale=1.0')
-  title Game Sharing Tips &amp; Tricks - Guides
-  style.
-    body {
-    font-family: Arial, sans-serif;
-    background-color: #010101;
-    color: #FEFDFD;
-    margin: 0;
-    padding: 0;
-    }
-    .header {
-    background-color: #3A3153;
-    color: white;
-    text-align: center;
-    padding: 20px;
-    font-size: 40px;
-    }
-    .nav-menu {
-    background-color: #3A3153;
-    text-align: center;
-    padding: 10px 0;
-    }
-    .nav-menu a {
-    color: white;
-    text-decoration: none;
-    padding: 0 15px;
-    font-size: 18px;
-    }
-    .nav-menu a:hover {
-    text-decoration: underline;
-    }
-    .container {
-    width: 80%;
-    margin: auto;
-    padding: 20px 0;
-    }
-    .filter-bar {
-    margin-top: 20px;
-    margin-bottom: 20px;
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    }
-    .filter-bar input {
-    padding: 10px;
-    width: 50%;
-    border-radius: 5px;
-    border: none;
-    font-size: 16px;
-    background-color: #333;
-    color: #fff;
-    }
-    .filter-bar select {
-    padding: 10px;
-    width: 20%;
-    border-radius: 5px;
-    border: none;
-    font-size: 16px;
-    background-color: #333;
-    color: #fff;
-    }
-    .guide-item {
-    background-color: #222;
-    padding: 15px;
-    margin-bottom: 10px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: transform 0.2s;
-    border: 1px solid #444;
-    }
-    .guide-item:hover {
-    transform: translateY(-5px);
-    background-color: #2a2a2a;
-    }
-    .guide-item h3 {
-    color: #6B47B8;
-    font-size: 24px;
-    margin-top: 0;
-    }
-    .guide-item p {
-    color: #B1AEB1;
-    font-size: 16px;
-    margin-top: 10px;
-    }
-    .guide-item span {
-    color: #6B47B8;
-    font-size: 14px;
-    display: block;
-    margin-top: 8px;
-    }
-    .guide-content {
-    background-color: #333;
-    padding: 20px;
-    border-radius: 8px;
-    margin-top: 20px;
-    display: none;
-    border: 1px solid #444;
-    }
-    .guide-content h2 {
-    font-size: 28px;
-    color: #FEFDFD;
-    }
-    .guide-content p {
-    color: #B1AEB1;
-    }
-    .footer {
-    background-color: #3A3153;
-    color: white;
-    text-align: center;
-    padding: 15px;
-    position: relative;
-    bottom: 0;
-    width: 100%;
-    }
-// Header Section
-.header
-  | Guides
-// Navigation Bar
-.nav-menu
-  a(href="/") Home
-  a(href="/Forum") Forum
-  a(href="/userpage") User
-  a(href="/Details_page") About Us
-  a(href="/Guides") Guides
-  // Guides link added here
-// Filter Bar
-.filter-bar
-  input#filterInput(type='text' onkeyup='filterGuides()' placeholder='Search guides...')
-  select#filterCategory(onchange='filterGuides()')
-    option(value='all') All Categories
-    option(value='fps') FPS Games
-    option(value='rpg') RPG Games
-    option(value='mods') Mods
-// Guides Content
-#guideContainer.container
-  // Existing Guides
-  .guide-item(onclick='toggleGuide(1)' data-title='How to Improve Your FPS in Games' data-category='fps')
-    h3 How to Improve Your FPS in Games
-    p FPS optimization tips for smoother gameplay. Click to read more.
-    span Published: 2025-03-16
-    #guide-1.guide-content
-      h2 How to Improve Your FPS in Games
-      p
-        | In this guide, we will explore various methods to improve your FPS in games, ensuring smoother performance, especially for competitive gaming.
-      p
-        strong 1. Adjust Graphics Settings:
-        |  Lowering the graphical settings in-game can significantly boost your FPS. Focus on reducing textures, shadows, and anti-aliasing.
-      p
-        strong 2. Update Your Drivers:
-        |  Make sure your graphics drivers are up to date. Manufacturers often release optimizations for new games.
-      p
-        strong 3. Overclock Your GPU:
-        |  If you&apos;re comfortable with it, overclocking your GPU can help improve performance, but it comes with increased power consumption and heat generation.
-      p
-        strong 4. Use FPS Cap:
-        |  Capping the FPS to a certain limit can stabilize the game performance and prevent unnecessary power consumption.
-  .guide-item(onclick='toggleGuide(2)' data-title='Best RPG Builds for Beginners' data-category='rpg')
-    h3 Best RPG Builds for Beginners
-    p Explore some of the most beginner-friendly RPG builds. Click to read more.
-    span Published: 2025-03-10
-    #guide-2.guide-content
-      h2 Best RPG Builds for Beginners
-      p
-        | RPGs can be overwhelming for beginners, so we&apos;ve compiled the best builds that are easy to learn and fun to play.
-      p
-        strong 1. Warrior Build:
-        |  The Warrior build is perfect for beginners who want to focus on physical combat. Equip heavy armor and focus on strength and vitality.
-      p
-        strong 2. Mage Build:
-        |  If you prefer magic, the Mage build allows you to use ranged attacks and magical spells. Focus on intelligence and mana regeneration.
-      p
-        strong 3. Hybrid Build:
-        |  The Hybrid build is a balanced combination of both strength and magic, giving you flexibility in combat.
-  .guide-item(onclick='toggleGuide(3)' data-title='Essential Mods for Skyrim' data-category='mods')
-    h3 Essential Mods for Skyrim
-    p
-      | Discover the must-have mods that enhance your Skyrim experience. Click to read more.
-    span Published: 2025-03-05
-    #guide-3.guide-content
-      h2 Essential Mods for Skyrim
-      p
-        | Mods can drastically change the way you experience Skyrim. Here are some essential mods that improve gameplay, graphics, and story.
-      p
-        strong 1. Skyrim Script Extender (SKSE):
-        |  A must-have mod that allows other mods to interact with Skyrim in deeper ways.
-      p
-        strong 2. Unofficial Skyrim Patch:
-        |  This mod fixes hundreds of bugs and glitches, improving the overall game experience.
-      p
-        strong 3. RealVision ENB:
-        |  A graphical enhancement mod that makes Skyrim&apos;s visuals stunning and lifelike.
-  // New Guides Added to Ensure 2 Guides per Filter Category
-  // FPS Category
-  .guide-item(onclick='toggleGuide(4)' data-title='How to Get the Best Performance in Racing Games' data-category='fps')
-    h3 How to Get the Best Performance in Racing Games
-    p
-      | Enhance your racing game experience with these performance tips. Click to read more.
-    span Published: 2025-03-18
-    #guide-4.guide-content
-      h2 How to Get the Best Performance in Racing Games
-      p
-        | Racing games require smooth and fast performance to ensure a good experience. Here are some tips to boost your performance in popular racing games.
-      p
-        strong 1. Use a Racing Wheel:
-        |  A racing wheel offers better control and can improve overall gameplay performance.
-      p
-        strong 2. Adjust In-Game Settings:
-        |  Lower graphics settings and tweak controls for a smoother gaming experience.
-  // RPG Category
-  .guide-item(onclick='toggleGuide(5)' data-title='Top 5 Beginner-Friendly RPGs' data-category='rpg')
-    h3 Top 5 Beginner-Friendly RPGs
-    p Discover the best RPGs for beginners. Click to read more.
-    span Published: 2025-03-22
-    #guide-5.guide-content
-      h2 Top 5 Beginner-Friendly RPGs
-      p
-        | Getting into RPGs can be daunting. Here are the top RPGs that are beginner-friendly and easy to get started with.
-      p
-        strong 1. The Witcher 3:
-        |  A rich open-world RPG with a compelling story and accessible gameplay.
-      p
-        strong 2. Skyrim:
-        |  Another great choice, featuring immersive world-building and combat mechanics suitable for all players.
-      p
-        strong 3. Divinity: Original Sin 2:
-        |  A turn-based RPG with a lot of freedom and great co-op gameplay.
-  // Mods Category
-  .guide-item(onclick='toggleGuide(6)' data-title='Top 5 Mods for GTA V' data-category='mods')
-    h3 Top 5 Mods for GTA V
-    p Transform your GTA V experience with these must-have mods. Click to read more.
-    span Published: 2025-03-20
-    #guide-6.guide-content
-      h2 Top 5 Mods for GTA V
-      p
-        | Here are some of the top mods you should install to enhance your Grand Theft Auto V experience.
-      p
-        strong 1. LSPDFR Mod:
-        |  Allows you to play as a police officer in GTA V.
-      p
-        strong 2. OpenIV:
-        |  A powerful modding tool to edit game files for further customization.
-      p
-        strong 3. Realistic Driving V:
-        |  A mod that changes the car physics for a more realistic driving experience.
-// Footer Section
-.footer
-  | &copy; 2025 Game Sharing Tips &amp; Tricks. All rights reserved.
-script.
-  // Function to toggle the guide content visibility
-  function toggleGuide(guideId) {
-  const guideContent = document.getElementById(`guide-${guideId}`);
-  const isVisible = guideContent.style.display === 'block';
-  guideContent.style.display = isVisible ? 'none' : 'block';
-  }
-  // Function to filter guides based on the input search and category
-  function filterGuides() {
-  const input = document.getElementById("filterInput").value.toLowerCase();
-  const selectedCategory = document.getElementById("filterCategory").value;
-  const guideItems = document.getElementsByClassName("guide-item");
-  for (let i = 0; i < guideItems.length; i++) {
-  const title = guideItems[i].getAttribute("data-title").toLowerCase();
-  const category = guideItems[i].getAttribute("data-category").toLowerCase();
-  const matchesTitle = title.includes(input);
-  const matchesCategory = selectedCategory === "all" || category === selectedCategory;
-  if (matchesTitle && matchesCategory) {
-  guideItems[i].style.display = "block";
-  } else {
-  guideItems[i].style.display = "none";
-  }
-  }
-  }
+html(lang="en")
+  head
+    meta(charset='UTF-8')
+    meta(name='viewport' content='width=device-width, initial-scale=1.0')
+    title Game Sharing Tips & Tricks - Guides
+    // Add Three.js and Vanta.js scripts
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js")
+    script(src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.fog.min.js")
+    style.
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        background-color: #010101; /* Black background */
+        color: #FEFDFD; /* White text */
+        min-height: 100vh; /* Ensure the body takes the full height of the viewport */
+        overflow-x: hidden;
+      }
+
+      #vanta-background {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+      }
+
+      /* Header with title */
+      .header {
+        background-color: rgba(0, 0, 0, 0.5); /* More translucent black background */
+        color: #FEFDFD; /* White text */
+        padding: 25px 20px; /* Increased top/bottom padding */
+        text-align: center;
+        position: relative; 
+        z-index: 100; /* Ensure the header stays above everything */
+        backdrop-filter: blur(5px); /* Apply a blur effect for better text readability */
+      }
+      
+      .header h1 {
+        margin: 0;
+        font-size: 2.5em;
+        margin-bottom: 15px; /* Add space between header text and navbar */
+        text-shadow: 0 0 5px rgba(0, 0, 0, 0.5); /* Text shadow for better visibility */
+      }
+      
+      /* Navigation styling with improved visibility and translucency */
+      .navbar-container {
+        position: relative;
+        width: 100%;
+        z-index: 100; /* Very high z-index */
+      }
+      
+      .navbar {
+        display: flex;
+        justify-content: center;
+        background-color: rgba(58, 49, 83, 0.6); /* More translucent purple */
+        width: 100%;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Shadow for depth */
+        border-top: 1px solid rgba(255, 255, 255, 0.1); /* Subtle top border */
+        border-bottom: 1px solid rgba(0, 0, 0, 0.2); /* Subtle bottom border */
+        backdrop-filter: blur(5px); /* Apply a blur effect for better text readability */
+      }
+      
+      .navbar a {
+        color: #FEFDFD;
+        padding: 15px 25px; /* Wider padding for easier clicking */
+        text-decoration: none;
+        font-weight: bold; /* Make text bolder */
+        transition: all 0.3s ease;
+        font-size: 1.1em; /* Slightly larger font */
+        letter-spacing: 0.5px; /* Better readability */
+        text-shadow: 0 0 4px rgba(0, 0, 0, 0.7); /* Text shadow for better visibility */
+        position: relative; /* For the hover effect */
+      }
+      
+      .navbar a:hover {
+        background-color: rgba(95, 67, 178, 0.7); /* Translucent purple for hover effect */
+        box-shadow: 0 0 15px rgba(95, 67, 178, 0.5); /* Glow effect on hover */
+        transform: translateY(-2px); /* Slight lift effect */
+      }
+      
+      .navbar a:active {
+        transform: translateY(1px); /* Press effect */
+      }
+
+      /* Filter bar */
+      .filter-bar {
+        display: flex;
+        justify-content: center;
+        padding: 20px;
+        gap: 15px;
+        position: relative;
+        z-index: 10;
+        width: 80%;
+        margin: 20px auto 0;
+      }
+
+      .filter-bar input, .filter-bar select {
+        padding: 12px 15px;
+        border-radius: 5px;
+        border: none;
+        background-color: rgba(30, 30, 40, 0.8);
+        color: #FEFDFD;
+        backdrop-filter: blur(5px);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s ease;
+      }
+
+      .filter-bar input {
+        width: 50%;
+      }
+
+      .filter-bar input:focus, .filter-bar select:focus {
+        outline: none;
+        box-shadow: 0 0 10px rgba(95, 67, 178, 0.6);
+      }
+
+      .filter-bar select {
+        width: 20%;
+        cursor: pointer;
+      }
+
+      .filter-bar select option {
+        background-color: #222;
+        color: #FEFDFD;
+      }
+
+      /* Container */
+      .container {
+        width: 80%;
+        margin: 20px auto 80px;
+        padding: 20px;
+        position: relative;
+        z-index: 10;
+      }
+
+      /* Guide items */
+      .guide-item {
+        background-color: rgba(34, 34, 34, 0.7);
+        padding: 20px;
+        margin-bottom: 20px;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(68, 68, 68, 0.5);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(5px);
+      }
+
+      .guide-item:hover {
+        transform: translateY(-5px);
+        background-color: rgba(42, 42, 42, 0.8);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        border-color: rgba(107, 71, 184, 0.5);
+      }
+
+      .guide-item h3 {
+        color: #8C6EFF;
+        font-size: 24px;
+        margin-top: 0;
+        text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+      }
+
+      .guide-item p {
+        color: #DCDCDC;
+        font-size: 16px;
+        margin-top: 10px;
+      }
+
+      .guide-item span {
+        color: #8C6EFF;
+        font-size: 14px;
+        display: block;
+        margin-top: 15px;
+        font-style: italic;
+      }
+
+      /* Guide content */
+      .guide-content {
+        background-color: rgba(51, 51, 51, 0.8);
+        padding: 25px;
+        border-radius: 8px;
+        margin-top: 20px;
+        display: none;
+        border: 1px solid rgba(68, 68, 68, 0.5);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3) inset;
+        backdrop-filter: blur(5px);
+      }
+
+      .guide-content h2 {
+        font-size: 28px;
+        color: #8C6EFF;
+        margin-top: 0;
+        text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+      }
+
+      .guide-content p {
+        color: #DCDCDC;
+        line-height: 1.6;
+      }
+
+      .guide-content strong {
+        color: #AAA2FF;
+      }
+
+      .footer {
+        text-align: center;
+        background-color: rgba(0, 0, 0, 0.5); /* More translucent footer */
+        color: #FEFDFD;
+        padding: 10px 0;
+        position: fixed;
+        width: 100%;
+        bottom: 0;
+        z-index: 10; /* Ensure the footer stays above the background */
+        backdrop-filter: blur(5px); /* Apply a blur effect for better text readability */
+      }
+
+  body.dark-theme
+    // Vanta background div
+    #vanta-background
+
+    // Header Section with navbar included
+    .header
+      h1 Guides
+      .navbar-container
+        .navbar
+          a(href='/') Home
+          a(href='/Forum') Forum
+          a(href='/userpage') User
+          a(href='/Details_page') About Us
+          a(href='/Guides') Guides
+
+    // Filter Bar
+    .filter-bar
+      input#filterInput(type='text' onkeyup='filterGuides()' placeholder='Search guides...')
+      select#filterCategory(onchange='filterGuides()')
+        option(value='all') All Categories
+        option(value='fps') FPS Games
+        option(value='rpg') RPG Games
+        option(value='mods') Mods
+
+    // Guides Content
+    #guideContainer.container
+      // Existing Guides
+      .guide-item(onclick='toggleGuide(1)' data-title='How to Improve Your FPS in Games' data-category='fps')
+        h3 How to Improve Your FPS in Games
+        p FPS optimization tips for smoother gameplay. Click to read more.
+        span Published: 2025-03-16
+        #guide-1.guide-content
+          h2 How to Improve Your FPS in Games
+          p
+            | In this guide, we will explore various methods to improve your FPS in games, ensuring smoother performance, especially for competitive gaming.
+          p
+            strong 1. Adjust Graphics Settings:
+            |  Lowering the graphical settings in-game can significantly boost your FPS. Focus on reducing textures, shadows, and anti-aliasing.
+          p
+            strong 2. Update Your Drivers:
+            |  Make sure your graphics drivers are up to date. Manufacturers often release optimizations for new games.
+          p
+            strong 3. Overclock Your GPU:
+            |  If you&apos;re comfortable with it, overclocking your GPU can help improve performance, but it comes with increased power consumption and heat generation.
+          p
+            strong 4. Use FPS Cap:
+            |  Capping the FPS to a certain limit can stabilize the game performance and prevent unnecessary power consumption.
+      .guide-item(onclick='toggleGuide(2)' data-title='Best RPG Builds for Beginners' data-category='rpg')
+        h3 Best RPG Builds for Beginners
+        p Explore some of the most beginner-friendly RPG builds. Click to read more.
+        span Published: 2025-03-10
+        #guide-2.guide-content
+          h2 Best RPG Builds for Beginners
+          p
+            | RPGs can be overwhelming for beginners, so we&apos;ve compiled the best builds that are easy to learn and fun to play.
+          p
+            strong 1. Warrior Build:
+            |  The Warrior build is perfect for beginners who want to focus on physical combat. Equip heavy armor and focus on strength and vitality.
+          p
+            strong 2. Mage Build:
+            |  If you prefer magic, the Mage build allows you to use ranged attacks and magical spells. Focus on intelligence and mana regeneration.
+          p
+            strong 3. Hybrid Build:
+            |  The Hybrid build is a balanced combination of both strength and magic, giving you flexibility in combat.
+      .guide-item(onclick='toggleGuide(3)' data-title='Essential Mods for Skyrim' data-category='mods')
+        h3 Essential Mods for Skyrim
+        p
+          | Discover the must-have mods that enhance your Skyrim experience. Click to read more.
+        span Published: 2025-03-05
+        #guide-3.guide-content
+          h2 Essential Mods for Skyrim
+          p
+            | Mods can drastically change the way you experience Skyrim. Here are some essential mods that improve gameplay, graphics, and story.
+          p
+            strong 1. Skyrim Script Extender (SKSE):
+            |  A must-have mod that allows other mods to interact with Skyrim in deeper ways.
+          p
+            strong 2. Unofficial Skyrim Patch:
+            |  This mod fixes hundreds of bugs and glitches, improving the overall game experience.
+          p
+            strong 3. RealVision ENB:
+            |  A graphical enhancement mod that makes Skyrim&apos;s visuals stunning and lifelike.
+      // New Guides Added to Ensure 2 Guides per Filter Category
+      // FPS Category
+      .guide-item(onclick='toggleGuide(4)' data-title='How to Get the Best Performance in Racing Games' data-category='fps')
+        h3 How to Get the Best Performance in Racing Games
+        p
+          | Enhance your racing game experience with these performance tips. Click to read more.
+        span Published: 2025-03-18
+        #guide-4.guide-content
+          h2 How to Get the Best Performance in Racing Games
+          p
+            | Racing games require smooth and fast performance to ensure a good experience. Here are some tips to boost your performance in popular racing games.
+          p
+            strong 1. Use a Racing Wheel:
+            |  A racing wheel offers better control and can improve overall gameplay performance.
+          p
+            strong 2. Adjust In-Game Settings:
+            |  Lower graphics settings and tweak controls for a smoother gaming experience.
+      // RPG Category
+      .guide-item(onclick='toggleGuide(5)' data-title='Top 5 Beginner-Friendly RPGs' data-category='rpg')
+        h3 Top 5 Beginner-Friendly RPGs
+        p Discover the best RPGs for beginners. Click to read more.
+        span Published: 2025-03-22
+        #guide-5.guide-content
+          h2 Top 5 Beginner-Friendly RPGs
+          p
+            | Getting into RPGs can be daunting. Here are the top RPGs that are beginner-friendly and easy to get started with.
+          p
+            strong 1. The Witcher 3:
+            |  A rich open-world RPG with a compelling story and accessible gameplay.
+          p
+            strong 2. Skyrim:
+            |  Another great choice, featuring immersive world-building and combat mechanics suitable for all players.
+          p
+            strong 3. Divinity: Original Sin 2:
+            |  A turn-based RPG with a lot of freedom and great co-op gameplay.
+      // Mods Category
+      .guide-item(onclick='toggleGuide(6)' data-title='Top 5 Mods for GTA V' data-category='mods')
+        h3 Top 5 Mods for GTA V
+        p Transform your GTA V experience with these must-have mods. Click to read more.
+        span Published: 2025-03-20
+        #guide-6.guide-content
+          h2 Top 5 Mods for GTA V
+          p
+            | Here are some of the top mods you should install to enhance your Grand Theft Auto V experience.
+          p
+            strong 1. LSPDFR Mod:
+            |  Allows you to play as a police officer in GTA V.
+          p
+            strong 2. OpenIV:
+            |  A powerful modding tool to edit game files for further customization.
+          p
+            strong 3. Realistic Driving V:
+            |  A mod that changes the car physics for a more realistic driving experience.
+    
+    // Footer
+    .footer
+      p &copy; 2025 Game Sharing Tips & Tricks. All rights reserved.
+
+    // Initialize Vanta FOG effect and guide functionality
+    script.
+      // Initialize Vanta fog effect immediately without waiting for DOMContentLoaded
+      VANTA.FOG({
+        el: "#vanta-background",
+        mouseControls: true,
+        touchControls: true,
+        gyroControls: false,
+        minHeight: 200.00,
+        minWidth: 200.00,
+        highlightColor: 0x5F43B2,
+        midtoneColor: 0x3A3153,
+        lowlightColor: 0x010101,
+        baseColor: 0x010101,
+        blurFactor: 0.60,
+        speed: 1.50,
+        zoom: 0.80
+      });
+
+      // Function to toggle the guide content visibility
+      function toggleGuide(guideId) {
+        const guideContent = document.getElementById(`guide-${guideId}`);
+        const isVisible = guideContent.style.display === 'block';
+        guideContent.style.display = isVisible ? 'none' : 'block';
+      }
+      
+      // Function to filter guides based on the input search and category
+      function filterGuides() {
+        const input = document.getElementById("filterInput").value.toLowerCase();
+        const selectedCategory = document.getElementById("filterCategory").value;
+        const guideItems = document.getElementsByClassName("guide-item");
+        
+        for (let i = 0; i < guideItems.length; i++) {
+          const title = guideItems[i].getAttribute("data-title").toLowerCase();
+          const category = guideItems[i].getAttribute("data-category").toLowerCase();
+          const matchesTitle = title.includes(input);
+          const matchesCategory = selectedCategory === "all" || category === selectedCategory;
+          
+          if (matchesTitle && matchesCategory) {
+            guideItems[i].style.display = "block";
+          } else {
+            guideItems[i].style.display = "none";
+          }
+        }
+      }

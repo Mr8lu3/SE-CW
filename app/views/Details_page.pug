@@ -1,91 +1,189 @@
 doctype html
-head
-  meta(charset='UTF-8')
-  meta(name='viewport' content='width=device-width, initial-scale=1.0')
-  title About Us - Game Sharing Tips &amp; Tricks
-  style.
-    body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    background-color: #010101; /* Black background */
-    color: #FEFDFD; /* White text */
-    }
-    /* Header */
-    .header {
-    background-color: #3A3153; /* Dark purple */
-    color: #FEFDFD;
-    padding: 20px;
-    text-align: center;
-    }
-    .header h1 {
-    margin: 0;
-    font-size: 2.2em;
-    }
-    /* Navigation */
-    .navbar {
-    display: flex;
-    justify-content: center;
-    background-color: #3A3153;
-    }
-    .navbar a {
-    color: #FEFDFD;
-    padding: 15px;
-    text-decoration: none;
-    }
-    .navbar a:hover {
-    background-color: #5F43B2;
-    }
-    /* About Us Content Box */
-    .about-box {
-    background-color: #2D2D2D; /* Light grey box */
-    color: #A17EFF; /* Purple text */
-    padding: 30px;
-    border-radius: 10px;
-    margin: 30px auto;
-    width: 80%;
-    text-align: left;
-    font-size: 1.2em;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    transition: transform 0.3s ease-in-out;
-    }
-    .about-box:hover {
-    transform: translateY(-5px); /* Lift effect */
-    }
-    /* Footer */
-    .footer {
-    text-align: center;
-    background-color: #3A3153;
-    color: #FEFDFD;
-    padding: 10px 0;
-    position: fixed;
-    width: 100%;
-    bottom: 0;
-    }
-    /* Paragraph text color change */
-    .about-box p {
-    color: #FEFDFD; /* White text */
-    }
-// Header
-.header
-  h1 About Us
-// Navigation Bar
-.navbar
-  a(href="/") Home
-  a(href="/Forum") Forum
-  a(href="/userpage") User
-  a(href="/Details_page") About Us
-  a(href="/Guides") Guides
-// About Us Content
-.about-box
-  h2 Who We Are
-  p
-    | Welcome to Game Sharing Tips &amp; Tricks! We are passionate gamers dedicated to helping players improve their gameplay experience. Our platform provides guides, strategies, and community-driven content to help you master your favorite games.
-  h2 Our Mission
-  p
-    | We aim to create a space where gamers can find high-quality tutorials, build strategies, and share their expertise with others. Whether you&apos;re a casual player or a hardcore enthusiast, we&rsquo;ve got something for everyone.
-  h2 Join Us
-  p
-    | Get involved by sharing your knowledge, joining discussions, and discovering new ways to enhance your gaming journey. Let&apos;s level up together!
-// Footer
-.footer
-  p &copy; 2025 Game Sharing Tips &amp; Tricks. All rights reserved.
+html(lang="en")
+  head
+    meta(charset='UTF-8')
+    meta(name='viewport' content='width=device-width, initial-scale=1.0')
+    title About Us - Game Sharing Tips & Tricks
+    // Add Three.js and Vanta.js scripts
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js")
+    script(src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.fog.min.js")
+    style.
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        background-color: #010101; /* Black background */
+        color: #FEFDFD; /* White text */
+        min-height: 100vh; /* Ensure the body takes the full height of the viewport */
+        overflow-x: hidden;
+      }
+
+      #vanta-background {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+      }
+
+      /* Header with title */
+      .header {
+        background-color: rgba(0, 0, 0, 0.5); /* More translucent black background */
+        color: #FEFDFD; /* White text */
+        padding: 25px 20px; /* Increased top/bottom padding */
+        text-align: center;
+        position: relative; 
+        z-index: 100; /* Ensure the header stays above everything */
+        backdrop-filter: blur(5px); /* Apply a blur effect for better text readability */
+      }
+      
+      .header h1 {
+        margin: 0;
+        font-size: 2.5em;
+        margin-bottom: 15px; /* Add space between header text and navbar */
+        text-shadow: 0 0 5px rgba(0, 0, 0, 0.5); /* Text shadow for better visibility */
+      }
+      
+      /* Navigation styling with improved visibility and translucency */
+      .navbar-container {
+        position: relative;
+        width: 100%;
+        z-index: 100; /* Very high z-index */
+      }
+      
+      .navbar {
+        display: flex;
+        justify-content: center;
+        background-color: rgba(58, 49, 83, 0.6); /* More translucent purple */
+        width: 100%;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Shadow for depth */
+        border-top: 1px solid rgba(255, 255, 255, 0.1); /* Subtle top border */
+        border-bottom: 1px solid rgba(0, 0, 0, 0.2); /* Subtle bottom border */
+        backdrop-filter: blur(5px); /* Apply a blur effect for better text readability */
+      }
+      
+      .navbar a {
+        color: #FEFDFD;
+        padding: 15px 25px; /* Wider padding for easier clicking */
+        text-decoration: none;
+        font-weight: bold; /* Make text bolder */
+        transition: all 0.3s ease;
+        font-size: 1.1em; /* Slightly larger font */
+        letter-spacing: 0.5px; /* Better readability */
+        text-shadow: 0 0 4px rgba(0, 0, 0, 0.7); /* Text shadow for better visibility */
+        position: relative; /* For the hover effect */
+      }
+      
+      .navbar a:hover {
+        background-color: rgba(95, 67, 178, 0.7); /* Translucent purple for hover effect */
+        box-shadow: 0 0 15px rgba(95, 67, 178, 0.5); /* Glow effect on hover */
+        transform: translateY(-2px); /* Slight lift effect */
+      }
+      
+      .navbar a:active {
+        transform: translateY(1px); /* Press effect */
+      }
+
+      /* About Us Content Box */
+      .about-box {
+        background-color: rgba(45, 45, 45, 0.7);
+        color: #A17EFF;
+        padding: 30px;
+        border-radius: 10px;
+        margin: 40px auto 80px;
+        width: 80%;
+        text-align: left;
+        font-size: 1.2em;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        position: relative;
+        z-index: 10;
+        backdrop-filter: blur(5px);
+        border: 1px solid rgba(95, 67, 178, 0.2);
+      }
+
+      .about-box:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        border-color: rgba(95, 67, 178, 0.4);
+      }
+
+      .about-box h2 {
+        color: #8C6EFF;
+        margin-top: 30px;
+        margin-bottom: 15px;
+        text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+      }
+
+      .about-box h2:first-child {
+        margin-top: 0;
+      }
+
+      /* Paragraph text color */
+      .about-box p {
+        color: #FEFDFD;
+        line-height: 1.6;
+        margin-bottom: 20px;
+      }
+
+      .footer {
+        text-align: center;
+        background-color: rgba(0, 0, 0, 0.5); /* More translucent footer */
+        color: #FEFDFD;
+        padding: 10px 0;
+        position: fixed;
+        width: 100%;
+        bottom: 0;
+        z-index: 10; /* Ensure the footer stays above the background */
+        backdrop-filter: blur(5px); /* Apply a blur effect for better text readability */
+      }
+
+  body.dark-theme
+    // Vanta background div
+    #vanta-background
+
+    // Header Section with navbar included
+    .header
+      h1 About Us
+      .navbar-container
+        .navbar
+          a(href='/') Home
+          a(href='/Forum') Forum
+          a(href='/userpage') User
+          a(href='/Details_page') About Us
+          a(href='/Guides') Guides
+
+    // About Us Content
+    .about-box
+      h2 Who We Are
+      p
+        | Welcome to Game Sharing Tips & Tricks! We are passionate gamers dedicated to helping players improve their gameplay experience. Our platform provides guides, strategies, and community-driven content to help you master your favorite games.
+      h2 Our Mission
+      p
+        | We aim to create a space where gamers can find high-quality tutorials, build strategies, and share their expertise with others. Whether you're a casual player or a hardcore enthusiast, we've got something for everyone.
+      h2 Join Us
+      p
+        | Get involved by sharing your knowledge, joining discussions, and discovering new ways to enhance your gaming journey. Let's level up together!
+
+    // Footer
+    .footer
+      p &copy; 2025 Game Sharing Tips & Tricks. All rights reserved.
+
+    // Initialize Vanta FOG effect
+    script.
+      // Initialize Vanta fog effect
+      VANTA.FOG({
+        el: "#vanta-background",
+        mouseControls: true,
+        touchControls: true,
+        gyroControls: false,
+        minHeight: 200.00,
+        minWidth: 200.00,
+        highlightColor: 0x5F43B2,
+        midtoneColor: 0x3A3153,
+        lowlightColor: 0x010101,
+        baseColor: 0x010101,
+        blurFactor: 0.60,
+        speed: 1.50,
+        zoom: 0.80
+      });
