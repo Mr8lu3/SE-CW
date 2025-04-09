@@ -36,29 +36,55 @@ async function login(req, res) {
 // Register new user
 async function register(req, res) {
   try {
+    console.log('Registration process started');
+    console.log('Form data received:', { 
+      username: req.body.username,
+      email: req.body.email,
+      password: req.body.password ? '[PROVIDED]' : '[MISSING]'
+    });
+    
     const { username, password, email } = req.body;
     
     if (!username || !password) {
+      console.log('Registration failed: Missing username or password');
       return res.render('signup', { error: 'Username and password are required' });
     }
     
     // Check if user already exists
+    console.log(`Checking if username "${username}" already exists`);
     const existingUser = await UserModel.getUserByUsername(username);
     if (existingUser) {
+      console.log('Registration failed: Username already taken');
       return res.render('signup', { error: 'Username already taken' });
     }
     
     // Create user
-    const userId = await UserModel.createUser(username, password, email);
-    
-    // Get the created user
-    const user = await UserModel.getUserById(userId);
-    
-    // Set up session
-    req.session.user = user;
-    req.session.loggedIn = true;
-    
-    res.redirect('/');
+    console.log('Creating new user in database');
+    try {
+      const userId = await UserModel.createUser(username, password, email);
+      console.log(`User created with ID: ${userId}`);
+      
+      // Get the created user
+      console.log(`Retrieving created user with ID: ${userId}`);
+      const user = await UserModel.getUserById(userId);
+      
+      if (!user) {
+        console.log('Failed to retrieve the newly created user');
+        return res.render('signup', { error: 'User created but could not be retrieved. Please try logging in.' });
+      }
+      
+      console.log('User retrieved successfully:', { id: user.id, username: user.username });
+      
+      // Set up session
+      req.session.user = user;
+      req.session.loggedIn = true;
+      console.log('User session created, redirecting to homepage');
+      
+      res.redirect('/');
+    } catch (createError) {
+      console.error('Error during user creation step:', createError);
+      return res.render('signup', { error: `Registration failed: ${createError.message}` });
+    }
   } catch (error) {
     console.error('Registration error:', error);
     res.render('signup', { error: 'An error occurred during registration' });

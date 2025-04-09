@@ -153,6 +153,8 @@ async function getUserById(id) {
 // Create new user
 async function createUser(username, password, email) {
   try {
+    console.log(`Attempting to create user with username: ${username}, email: ${email}`);
+    
     // Check if the table has password column or password_hash column
     const passwordColumnQuery = `
       SELECT COLUMN_NAME
@@ -162,14 +164,32 @@ async function createUser(username, password, email) {
       AND (COLUMN_NAME = 'password' OR COLUMN_NAME = 'password_hash')
     `;
     
+    console.log('Checking password column name...');
     const passwordColumns = await db.query(passwordColumnQuery);
-    const passwordColumnName = passwordColumns.length > 0 ? passwordColumns[0].COLUMN_NAME : 'password_hash';
+    console.log('Password columns found:', passwordColumns);
     
+    const passwordColumnName = passwordColumns.length > 0 ? passwordColumns[0].COLUMN_NAME : 'password_hash';
+    console.log(`Using password column: ${passwordColumnName}`);
+    
+    console.log('Hashing password...');
     const hashedPassword = await bcrypt.hash(password, 10);
+    
     // Include role_id in the insert query
     const query = `INSERT INTO users (username, ${passwordColumnName}, email, role_id) VALUES (?, ?, ?, ?)`;
+    console.log(`Executing query: ${query}`);
+    console.log('With values:', [username, '[HASHED PASSWORD]', email, 2]);
+    
     const result = await db.query(query, [username, hashedPassword, email, 2]);  // Default role_id=2 for regular users
-    return result.insertId;
+    
+    console.log('User creation result:', result);
+    
+    if (result && result.insertId) {
+      console.log(`User created successfully with ID: ${result.insertId}`);
+      return result.insertId;
+    } else {
+      console.error('User creation failed - no insertId returned');
+      throw new Error('Failed to create user - database did not return an ID');
+    }
   } catch (error) {
     console.error('Error creating user:', error);
     throw error;
