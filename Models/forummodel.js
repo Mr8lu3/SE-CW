@@ -6,9 +6,12 @@ async function getAllForums() {
   const query = `
     SELECT forum.post_id, forum.forum_title, forum.content AS post_content,
            forum_comments.comment_id, forum_comments.content AS comment_content,
+           forum_comments.created_at AS comment_date, forum_comments.user_id,
+           users.username AS comment_author,
            forum.forum_tags
     FROM forum
     LEFT JOIN forum_comments ON forum.post_id = forum_comments.post_id
+    LEFT JOIN users ON forum_comments.user_id = users.user_id
     ORDER BY forum.post_id ASC, forum_comments.created_at ASC;
   `;
   
@@ -42,9 +45,16 @@ async function getAllForums() {
       forum.posts.push(forumPost);
     }
 
-    // Add the comment to the post if it exists
+    // Add the comment to the post if it exists, now including author info
     if (post.comment_id && post.comment_content) {
-      forumPost.comments.push(post.comment_content);
+      const commentWithAuthor = {
+        id: post.comment_id,
+        content: post.comment_content,
+        author: post.comment_author || 'Anonymous',
+        date: post.comment_date,
+        user_id: post.user_id
+      };
+      forumPost.comments.push(commentWithAuthor);
     }
   });
 
@@ -56,9 +66,12 @@ async function getForumById(forumId) {
   const query = `
     SELECT forum.post_id, forum.forum_title, forum.content AS post_content,
            forum_comments.comment_id, forum_comments.content AS comment_content,
+           forum_comments.created_at AS comment_date, forum_comments.user_id,
+           users.username AS comment_author,
            forum.forum_tags
     FROM forum
     LEFT JOIN forum_comments ON forum.post_id = forum_comments.post_id
+    LEFT JOIN users ON forum_comments.user_id = users.user_id
     WHERE forum.post_id = ?
     ORDER BY forum_comments.created_at ASC;
   `;
@@ -90,7 +103,14 @@ async function getForumById(forumId) {
     }
     
     if (post.comment_id && post.comment_content) {
-      forumPost.comments.push(post.comment_content);
+      const commentWithAuthor = {
+        id: post.comment_id,
+        content: post.comment_content,
+        author: post.comment_author || 'Anonymous',
+        date: post.comment_date,
+        user_id: post.user_id
+      };
+      forumPost.comments.push(commentWithAuthor);
     }
   });
   

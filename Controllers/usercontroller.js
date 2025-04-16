@@ -268,6 +268,123 @@ async function getUserProfile(req, res) {
   }
 }
 
+// Get public user profile by user ID
+async function getPublicUserProfile(req, res) {
+  try {
+    const userId = req.params.userId;
+    
+    if (!userId) {
+      console.error('No user ID provided in request params');
+      return res.status(400).render('error', { error: 'User ID is required' });
+    }
+    
+    console.log(`Fetching public profile for user ID: ${userId}`);
+    const user = await UserModel.getUserById(userId);
+    
+    if (!user) {
+      console.error(`User with ID ${userId} not found in database`);
+      return res.status(404).render('error', { error: 'User not found' });
+    }
+    
+    console.log(`Found user: ${user.username} (ID: ${user.id || user.user_id})`);
+    
+    // Parse favorite games if exists
+    let favoriteGames = [];
+    if (user.favorite_games) {
+      try {
+        favoriteGames = JSON.parse(user.favorite_games);
+        console.log(`Parsed favorite games: ${favoriteGames.join(', ')}`);
+      } catch (err) {
+        console.error('Error parsing favorite games JSON:', err);
+      }
+    }
+    
+    // Check if this is the logged-in user viewing their own profile
+    const isOwnProfile = req.session.loggedIn && 
+                        (req.session.user.id === parseInt(userId) || 
+                         req.session.user.user_id === parseInt(userId));
+    
+    console.log(`Is own profile: ${isOwnProfile}`);
+    console.log(`Rendering public profile with data:`, {
+      username: user.username,
+      isAdmin: user.is_admin,
+      favoriteGamesCount: favoriteGames.length,
+      isOwnProfile: isOwnProfile,
+      loggedIn: req.session.loggedIn || false
+    });
+    
+    // Render the public profile view
+    res.render('publicprofile', {
+      profileUser: user,
+      isAdmin: user.is_admin,
+      favorite_games: favoriteGames,
+      isOwnProfile: isOwnProfile,
+      loggedIn: req.session.loggedIn || false
+    });
+  } catch (error) {
+    console.error('Error getting public user profile:', error);
+    res.status(500).render('error', { error: 'Failed to retrieve user profile' });
+  }
+}
+
+// Get public user profile by username
+async function getPublicUserProfileByUsername(req, res) {
+  try {
+    const username = req.params.username;
+    
+    if (!username) {
+      console.error('No username provided in request params');
+      return res.status(400).render('error', { error: 'Username is required' });
+    }
+    
+    console.log(`Fetching public profile for username: ${username}`);
+    const user = await UserModel.getUserByUsername(username);
+    
+    if (!user) {
+      console.error(`User with username ${username} not found in database`);
+      return res.status(404).render('error', { error: 'User not found' });
+    }
+    
+    console.log(`Found user: ${user.username} (ID: ${user.id || user.user_id})`);
+    
+    // Parse favorite games if exists
+    let favoriteGames = [];
+    if (user.favorite_games) {
+      try {
+        favoriteGames = JSON.parse(user.favorite_games);
+        console.log(`Parsed favorite games: ${favoriteGames.join(', ')}`);
+      } catch (err) {
+        console.error('Error parsing favorite games JSON:', err);
+      }
+    }
+    
+    // Check if this is the logged-in user viewing their own profile
+    const isOwnProfile = req.session.loggedIn && 
+                        req.session.user.username === username;
+    
+    console.log(`Is own profile: ${isOwnProfile}`);
+    console.log(`Rendering public profile with data:`, {
+      username: user.username,
+      isAdmin: user.is_admin,
+      favoriteGamesCount: favoriteGames.length,
+      isOwnProfile: isOwnProfile,
+      loggedIn: req.session.loggedIn || false
+    });
+    
+    // Render the public profile view
+    res.render('publicprofile', {
+      profileUser: user,
+      isAdmin: user.is_admin,
+      favorite_games: favoriteGames,
+      isOwnProfile: isOwnProfile,
+      loggedIn: req.session.loggedIn || false
+    });
+  } catch (error) {
+    console.error('Error getting public user profile by username:', error);
+    res.status(500).render('error', { error: 'Failed to retrieve user profile' });
+  }
+}
+
 // Update user profile
 async function updateUserProfile(req, res) {
   try {
@@ -498,5 +615,7 @@ module.exports = {
   createNonAdminUser,
   updateUserProfile,
   checkAuthentication,
-  logUserData
+  logUserData,
+  getPublicUserProfile,
+  getPublicUserProfileByUsername
 };

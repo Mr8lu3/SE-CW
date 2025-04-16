@@ -189,6 +189,32 @@ html(lang="en")
       .comment:hover {
         background-color: rgba(102, 102, 102, 0.7);
       }
+      
+      .comment-content {
+        margin-bottom: 8px;
+      }
+      
+      .comment-metadata {
+        font-size: 0.85em;
+        color: #b3b3b3;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding-top: 5px;
+        display: flex;
+        justify-content: space-between;
+      }
+      
+      .comment-author {
+        color: #b3b3b3;
+      }
+      
+      .comment-author strong {
+        color: #A17EFF;
+      }
+      
+      .comment-date {
+        color: #888;
+        margin-left: 10px;
+      }
 
       /* Comment form */
       #commentForm {
@@ -295,7 +321,13 @@ html(lang="en")
               .post-title= post.question
               .comment-section
                 each comment in post.comments
-                  .comment= comment
+                  .comment
+                    .comment-content= comment.content
+                    .comment-metadata
+                      span.comment-author Posted by: 
+                        strong
+                          a(href=`/profile/${comment.author}` style="color: #A17EFF; text-decoration: none;")= comment.author
+                      span.comment-date | #{new Date(comment.date).toLocaleDateString()}
 
                 // Updated comment form with helpful instructions
                 form.comment-form(action="/comments" method="post") 
@@ -350,10 +382,35 @@ html(lang="en")
             statusSpan.textContent = 'Saving comment...';
             statusSpan.style.color = '#8C6EFF';
             
-            // Create new comment element for immediate feedback
+            // Create new comment element for immediate feedback with proper structure
             const newComment = document.createElement('div');
             newComment.classList.add('comment');
-            newComment.textContent = content;
+            
+            // Create comment content div
+            const contentDiv = document.createElement('div');
+            contentDiv.classList.add('comment-content');
+            contentDiv.textContent = content;
+            
+            // Create comment metadata div
+            const metadataDiv = document.createElement('div');
+            metadataDiv.classList.add('comment-metadata');
+            
+            // Create author span
+            const authorSpan = document.createElement('span');
+            authorSpan.classList.add('comment-author');
+            authorSpan.innerHTML = 'Posted by: <strong>You</strong>';
+            
+            // Create date span
+            const dateSpan = document.createElement('span');
+            dateSpan.classList.add('comment-date');
+            dateSpan.textContent = '| ' + new Date().toLocaleDateString();
+            
+            // Assemble the comment structure
+            metadataDiv.appendChild(authorSpan);
+            metadataDiv.appendChild(dateSpan);
+            newComment.appendChild(contentDiv);
+            newComment.appendChild(metadataDiv);
+            
             newComment.style.opacity = '0.7'; // Show it's pending
             commentSection.insertBefore(newComment, form);
             

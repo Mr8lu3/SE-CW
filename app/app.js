@@ -111,6 +111,10 @@ app.get('/admin', userController.adminDashboard);
 // Protected user profile route
 app.get('/userpage', userController.getUserProfile);
 
+// Public user profile routes (support both ID and username)
+app.get('/user/:userId', userController.getPublicUserProfile);
+app.get('/profile/:username', userController.getPublicUserProfileByUsername);
+
 // Profile update route
 app.post('/update-profile', userController.checkAuthentication, userController.updateUserProfile);
 

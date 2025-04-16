@@ -23,8 +23,18 @@ async function getAllForums(req, res) {
             {
               question: 'How do you improve your reaction time in FPS games?',
               comments: [
-                'Practice in aim trainers like Aim Lab.',
-                'Adjust your mouse DPI and sensitivity settings.'
+                {
+                  id: 101,
+                  content: 'Practice in aim trainers like Aim Lab.',
+                  author: 'GameMaster',
+                  date: new Date('2025-04-10')
+                },
+                {
+                  id: 102,
+                  content: 'Adjust your mouse DPI and sensitivity settings.',
+                  author: 'ProGamer123',
+                  date: new Date('2025-04-11')
+                }
               ]
             }
           ]
@@ -37,8 +47,18 @@ async function getAllForums(req, res) {
             {
               question: 'What is the best starting class in Elden Ring?',
               comments: [
-                'It depends on your playstyle, Vagabond is good for beginners.',
-                'Astrologer is great if you like magic.'
+                {
+                  id: 201,
+                  content: 'It depends on your playstyle, Vagabond is good for beginners.',
+                  author: 'SoulsVeteran',
+                  date: new Date('2025-04-09')
+                },
+                {
+                  id: 202,
+                  content: 'Astrologer is great if you like magic.',
+                  author: 'WizardFan',
+                  date: new Date('2025-04-12')
+                }
               ]
             }
           ]
@@ -51,8 +71,18 @@ async function getAllForums(req, res) {
             {
               question: 'How do you carry a team in League of Legends?',
               comments: [
-                'Focus on objectives, not just kills.',
-                'Warding and vision control is key!'
+                {
+                  id: 301,
+                  content: 'Focus on objectives, not just kills.',
+                  author: 'TopLaner',
+                  date: new Date('2025-04-08')
+                },
+                {
+                  id: 302,
+                  content: 'Warding and vision control is key!',
+                  author: 'SupportMain',
+                  date: new Date('2025-04-10')
+                }
               ]
             }
           ]
@@ -65,8 +95,18 @@ async function getAllForums(req, res) {
             {
               question: 'Best loadouts for Call of Duty Warzone?',
               comments: [
-                'M4A1 and MP5 are a great combo.',
-                'Use Ghost and High Alert perks.'
+                {
+                  id: 401,
+                  content: 'M4A1 and MP5 are a great combo.',
+                  author: 'WarzonePlayer',
+                  date: new Date('2025-04-05')
+                },
+                {
+                  id: 402,
+                  content: 'Use Ghost and High Alert perks.',
+                  author: 'Sniper42',
+                  date: new Date('2025-04-09')
+                }
               ]
             }
           ]
@@ -79,8 +119,18 @@ async function getAllForums(req, res) {
             {
               question: 'What\'s your most controversial gaming opinion?',
               comments: [
-                'Difficulty settings should be standard in all games.',
-                'Live-service games are ruining single-player experiences.'
+                {
+                  id: 501,
+                  content: 'Difficulty settings should be standard in all games.',
+                  author: 'CasualGamer',
+                  date: new Date('2025-04-07')
+                },
+                {
+                  id: 502,
+                  content: 'Live-service games are ruining single-player experiences.',
+                  author: 'StoryModeEnjoyer',
+                  date: new Date('2025-04-12')
+                }
               ]
             }
           ]
@@ -130,15 +180,23 @@ async function addComment(req, res) {
     }
 
     // Get user ID from session if user is logged in
-    let userId = null;
+    let userId = 1; // Default to user ID 1 if no user is logged in
+    
     if (req.session && req.session.loggedIn && req.session.user) {
-      userId = req.session.user.id || req.session.user.user_id;
+      // Try to get user ID from various possible properties in the session
+      if (req.session.user.id) {
+        userId = req.session.user.id;
+      } else if (req.session.user.user_id) {
+        userId = req.session.user.user_id;
+      }
+      
       console.log('User logged in, associating comment with user ID:', userId);
+      console.log('Full user session data:', req.session.user);
     } else {
-      console.log('Comment posted by anonymous user (not logged in)');
+      console.log('Using default user ID for comment:', userId);
     }
     
-    // Add the comment to the database
+    // Add the comment to the database (never send null for user_id)
     const result = await CommentModel.addComment(post_id, content, userId);
     console.log('Comment added successfully:', result);
     

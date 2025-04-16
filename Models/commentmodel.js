@@ -4,10 +4,12 @@ const db = require('../app/services/db'); // Update path to use your active db.j
 // Get comments for a specific forum post
 async function getCommentsForPost(postId) {
   const query = `
-    SELECT comment_id, content, created_at 
-    FROM forum_comments 
-    WHERE post_id = ?
-    ORDER BY created_at ASC;
+    SELECT c.comment_id, c.content, c.created_at, c.user_id,
+           u.username AS author_name
+    FROM forum_comments c
+    LEFT JOIN users u ON c.user_id = u.user_id
+    WHERE c.post_id = ?
+    ORDER BY c.created_at ASC;
   `;
   return db.query(query, [postId]);
 }
