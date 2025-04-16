@@ -164,8 +164,11 @@ html(lang="en")
     .main-content
       h2.welcome-title Welcome to the Gaming Tips
       p.welcome-subtitle Join thousands of gamers improving their skills daily here with us!
-      a(href='/Login')
-        button Go to Log In
+      if !loggedIn
+        a(href='/Login')
+          button Go to Log In
+      else
+        p.welcome-message Welcome back, #{user ? user.username : 'Gamer'}!
 
     // Footer
     .footer

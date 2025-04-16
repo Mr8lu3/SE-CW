@@ -205,7 +205,11 @@ html(lang="en")
     // Sign-Up Form
     .form-container
       h2 Sign up by email
+      if error
+        .error-message(style="color: #ff6b6b; background-color: rgba(255, 107, 107, 0.1); padding: 10px; border-radius: 5px; margin-bottom: 15px;")
+          p= error
       form(action='/signup' method='POST')
+        input(type='text' name='username' placeholder='Username' required='')
         input(type='email' name='email' placeholder='Email' required='')
         input(type='password' name='password' placeholder='Password' required='')
         input(type='password' name='confirm_password' placeholder='Confirm Password' required='')

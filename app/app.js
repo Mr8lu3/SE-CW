@@ -26,8 +26,12 @@ const UserModel = require('../Models/usermodel');
 app.use(session({
   secret: 'gaming-tips-secret-2025',
   resave: false,
-  saveUninitialized: true,
-  cookie: { maxAge: 3600000 } // 1 hour session expiry
+  saveUninitialized: false,
+  cookie: { 
+    maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days session expiry
+    secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
+    httpOnly: true // Prevent client-side JS from reading the cookie
+  }
 }));
 
 // Middleware for parsing form data
@@ -73,6 +77,11 @@ setTimeout(async () => {
   }
 }, 5000); // Wait 5 seconds before trying to initialize
 
+// Apply authentication middleware to protected routes
+app.use('/userpage', userController.checkAuthentication);
+app.use('/Forum/post', userController.checkAuthentication); 
+app.use('/admin', userController.checkAuthentication);
+
 // Route for the home page
 app.get("/", (req, res) => {
   res.render("index");
@@ -93,11 +102,17 @@ app.post('/signup', userController.register);
 
 app.get('/logout', userController.logout);
 
+// Force creation of a non-admin user
+app.get('/create-non-admin-user', userController.createNonAdminUser);
+
 // Admin routes
 app.get('/admin', userController.adminDashboard);
 
 // Protected user profile route
 app.get('/userpage', userController.getUserProfile);
+
+// Profile update route
+app.post('/update-profile', userController.checkAuthentication, userController.updateUserProfile);
 
 // Forum routes
 app.get('/Forum', forumController.getAllForums);

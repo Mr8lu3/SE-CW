@@ -133,6 +133,24 @@ html(lang="en")
         box-shadow: 0 0 10px rgba(95, 67, 178, 0.4);
       }
 
+      .login-container input[type="checkbox"] {
+        width: auto;
+        margin-right: 10px;
+        cursor: pointer;
+      }
+      
+      .remember-me {
+        display: flex;
+        align-items: center;
+        margin: 10px 0;
+      }
+      
+      .remember-me label {
+        color: #FEFDFD;
+        cursor: pointer;
+        font-size: 14px;
+      }
+
       .login-container button {
         width: 100%;
         padding: 15px;
@@ -207,6 +225,16 @@ html(lang="en")
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
       }
 
+      .error-message {
+        color: #ff6b6b;
+        background-color: rgba(255, 107, 107, 0.1);
+        border: 1px solid rgba(255, 107, 107, 0.3);
+        border-radius: 5px;
+        padding: 10px;
+        margin-bottom: 15px;
+        text-align: center;
+      }
+
       .footer {
         text-align: center;
         background-color: rgba(0, 0, 0, 0.5); /* More translucent footer */
@@ -243,6 +271,9 @@ html(lang="en")
       form(action='/login' method='POST')
         input(type='text' name='username' placeholder='Username' required='')
         input(type='password' name='password' placeholder='Password' required='')
+        .remember-me
+          input(type='checkbox' name='remember' id='remember')
+          label(for='remember') Remember me for 30 days
         button(type='submit') Log In
       .signup-link
         p Don't have an account? 

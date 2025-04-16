@@ -138,10 +138,43 @@ async function getUserByUsername(username) {
   }
 }
 
+// Get user by email
+async function getUserByEmail(email) {
+  try {
+    const query = 'SELECT * FROM users WHERE email = ?';
+    const users = await db.query(query, [email]);
+    return users.length > 0 ? users[0] : null;
+  } catch (error) {
+    console.error('Error getting user by email:', error);
+    throw error;
+  }
+}
+
 // Get user by ID
 async function getUserById(id) {
   try {
-    const query = 'SELECT * FROM users WHERE id = ?';
+    // Guard against undefined id
+    if (id === undefined) {
+      console.error('getUserById called with undefined id');
+      return null;
+    }
+    
+    // Check if we should use 'id' or 'user_id' (for schema compatibility)
+    const idColumnQuery = `
+      SELECT COLUMN_NAME
+      FROM information_schema.columns
+      WHERE table_schema = DATABASE()
+      AND table_name = 'users'
+      AND (COLUMN_NAME = 'id' OR COLUMN_NAME = 'user_id')
+      AND COLUMN_KEY = 'PRI'
+    `;
+    
+    const idColumns = await db.query(idColumnQuery);
+    const idColumnName = idColumns.length > 0 ? idColumns[0].COLUMN_NAME : 'id';
+    
+    const query = `SELECT * FROM users WHERE ${idColumnName} = ?`;
+    console.log(`Executing getUserById with query: ${query} and id: ${id}`);
+    
     const users = await db.query(query, [id]);
     return users.length > 0 ? users[0] : null;
   } catch (error) {
@@ -155,51 +188,99 @@ async function createUser(username, password, email) {
   try {
     console.log(`Attempting to create user with username: ${username}, email: ${email}`);
     
-    // Check if the table has password column or password_hash column
-    const passwordColumnQuery = `
-      SELECT COLUMN_NAME
-      FROM information_schema.columns
-      WHERE table_schema = DATABASE()
-      AND table_name = 'users'
-      AND (COLUMN_NAME = 'password' OR COLUMN_NAME = 'password_hash')
-    `;
-    
-    console.log('Checking password column name...');
-    const passwordColumns = await db.query(passwordColumnQuery);
-    console.log('Password columns found:', passwordColumns);
-    
-    const passwordColumnName = passwordColumns.length > 0 ? passwordColumns[0].COLUMN_NAME : 'password_hash';
-    console.log(`Using password column: ${passwordColumnName}`);
-    
     console.log('Hashing password...');
     const hashedPassword = await bcrypt.hash(password, 10);
     
-    // Include role_id in the insert query
-    const query = `INSERT INTO users (username, ${passwordColumnName}, email, role_id) VALUES (?, ?, ?, ?)`;
-    console.log(`Executing query: ${query}`);
-    console.log('With values:', [username, '[HASHED PASSWORD]', email, 2]);
+    // Check if user_id is auto-increment
+    const autoIncrementQuery = `
+      SELECT EXTRA 
+      FROM information_schema.COLUMNS 
+      WHERE TABLE_SCHEMA = DATABASE() 
+      AND TABLE_NAME = 'users' 
+      AND COLUMN_NAME = 'user_id' 
+      AND EXTRA LIKE '%auto_increment%'
+    `;
     
-    const result = await db.query(query, [username, hashedPassword, email, 2]);  // Default role_id=2 for regular users
+    const autoIncrementResult = await db.query(autoIncrementQuery);
+    const isAutoIncrement = autoIncrementResult.length > 0;
+    
+    // Use password_hash column directly and check if role_id exists
+    const roleColumnQuery = `
+      SELECT COUNT(*) as columnExists
+      FROM information_schema.columns
+      WHERE table_schema = DATABASE()
+      AND table_name = 'users'
+      AND column_name = 'role_id'
+    `;
+    
+    const roleColumnExists = await db.query(roleColumnQuery);
+    
+    let query;
+    let params;
+    
+    if (isAutoIncrement) {
+      // If user_id is auto-increment, don't specify it in the insert
+      if (roleColumnExists[0].columnExists > 0) {
+        query = `INSERT INTO users (username, password_hash, email, role_id) VALUES (?, ?, ?, ?)`;
+        params = [username, hashedPassword, email, 2]; // Default role_id=2 for regular users
+      } else {
+        query = `INSERT INTO users (username, password_hash, email) VALUES (?, ?, ?)`;
+        params = [username, hashedPassword, email];
+      }
+    } else {
+      // If user_id is not auto-increment, we need to generate a new ID
+      // Get the max user_id
+      const maxIdQuery = `SELECT MAX(user_id) as max_id FROM users`;
+      const maxIdResult = await db.query(maxIdQuery);
+      const newId = (maxIdResult[0].max_id || 0) + 1;
+      
+      if (roleColumnExists[0].columnExists > 0) {
+        query = `INSERT INTO users (user_id, username, password_hash, email, role_id) VALUES (?, ?, ?, ?, ?)`;
+        params = [newId, username, hashedPassword, email, 2];
+      } else {
+        query = `INSERT INTO users (user_id, username, password_hash, email) VALUES (?, ?, ?, ?)`;
+        params = [newId, username, hashedPassword, email];
+      }
+    }
+    
+    console.log(`Executing query: ${query}`);
+    console.log('With values:', params.map(p => typeof p === 'string' ? p === hashedPassword ? '[HASHED PASSWORD]' : p : p));
+    
+    const result = await db.query(query, params);
     
     console.log('User creation result:', result);
     
     if (result && result.insertId) {
       console.log(`User created successfully with ID: ${result.insertId}`);
       return result.insertId;
-    } else {
-      console.error('User creation failed - no insertId returned');
-      throw new Error('Failed to create user - database did not return an ID');
+    } else if (result && !isAutoIncrement) {
+      // If user_id is not auto-increment, the insertId might not be set
+      // Return the manually generated ID
+      const newUser = await getUserByUsername(username);
+      if (newUser) {
+        return newUser.user_id;
+      }
     }
+    
+    console.error('User creation failed - no insertId returned');
+    throw new Error('Failed to create user - database did not return an ID');
   } catch (error) {
     console.error('Error creating user:', error);
     throw error;
   }
 }
 
-// Verify user credentials
-async function verifyUser(username, password) {
+// Verify user credentials - supports login with either username or email
+async function verifyUser(usernameOrEmail, password) {
   try {
-    const user = await getUserByUsername(username);
+    // First try to find the user by username
+    let user = await getUserByUsername(usernameOrEmail);
+    
+    // If not found, try by email
+    if (!user) {
+      user = await getUserByEmail(usernameOrEmail);
+    }
+    
     if (!user) {
       return null;
     }
@@ -224,6 +305,7 @@ async function verifyUser(username, password) {
 module.exports = {
   initializeUserTable,
   getUserByUsername,
+  getUserByEmail,
   getUserById,
   createUser,
   verifyUser
