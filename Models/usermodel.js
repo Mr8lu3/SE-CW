@@ -42,6 +42,7 @@ async function initializeUserTable() {
           email VARCHAR(100),
           role_id INT DEFAULT 2,
           is_admin BOOLEAN DEFAULT false,
+          favorite_games TEXT,
           created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         );
       `;
@@ -101,6 +102,23 @@ async function initializeUserTable() {
       `;
       
       const roleColumnExists = await db.query(roleColumnQuery);
+      
+      // Check if the 'favorite_games' column exists
+      const favoriteGamesColumnQuery = `
+        SELECT COUNT(*) as columnExists
+        FROM information_schema.columns
+        WHERE table_schema = DATABASE()
+        AND table_name = 'users'
+        AND column_name = 'favorite_games'
+      `;
+      
+      const favoriteGamesColumnExists = await db.query(favoriteGamesColumnQuery);
+      
+      if (favoriteGamesColumnExists[0].columnExists === 0) {
+        console.log('favorite_games column is missing, adding it...');
+        await db.query('ALTER TABLE users ADD COLUMN favorite_games TEXT');
+        console.log('favorite_games column added');
+      }
       
       // Check if admin user exists
       const adminCheck = await db.query('SELECT COUNT(*) as count FROM users WHERE username = ?', ['admin']);
@@ -302,11 +320,118 @@ async function verifyUser(usernameOrEmail, password) {
   }
 }
 
+// Update a user's profile
+async function updateUser(userId, updateData) {
+  try {
+    console.log(`Attempting to update user with ID: ${userId}`);
+    console.log('Update data:', Object.keys(updateData).reduce((acc, key) => {
+      acc[key] = key === 'password' ? '[REDACTED]' : updateData[key];
+      return acc;
+    }, {}));
+    
+    // Check if we should use 'id' or 'user_id' (for schema compatibility)
+    const idColumnQuery = `
+      SELECT COLUMN_NAME
+      FROM information_schema.columns
+      WHERE table_schema = DATABASE()
+      AND table_name = 'users'
+      AND (COLUMN_NAME = 'id' OR COLUMN_NAME = 'user_id')
+      AND COLUMN_KEY = 'PRI'
+    `;
+    
+    const idColumns = await db.query(idColumnQuery);
+    const idColumnName = idColumns.length > 0 ? idColumns[0].COLUMN_NAME : 'id';
+    
+    // Check if favorite_games column exists
+    const favoriteGamesColumnQuery = `
+      SELECT COUNT(*) as columnExists
+      FROM information_schema.columns
+      WHERE table_schema = DATABASE()
+      AND table_name = 'users'
+      AND column_name = 'favorite_games'
+    `;
+    
+    const favoriteGamesColumnExists = await db.query(favoriteGamesColumnQuery);
+    
+    // Add the favorite_games column if it doesn't exist
+    if (favoriteGamesColumnExists[0].columnExists === 0) {
+      console.log('favorite_games column is missing, adding it...');
+      await db.query('ALTER TABLE users ADD COLUMN favorite_games TEXT');
+      console.log('favorite_games column added');
+    }
+    
+    // Build the SQL update statement dynamically
+    const setStatements = [];
+    const values = [];
+    
+    // Handle special case for password
+    if (updateData.password) {
+      const hashedPassword = await bcrypt.hash(updateData.password, 10);
+      
+      // Check which password field the user record has
+      const passwordColumnQuery = `
+        SELECT COLUMN_NAME
+        FROM information_schema.columns
+        WHERE table_schema = DATABASE()
+        AND table_name = 'users'
+        AND (COLUMN_NAME = 'password' OR COLUMN_NAME = 'password_hash')
+      `;
+      
+      const passwordColumns = await db.query(passwordColumnQuery);
+      const passwordColumnName = passwordColumns.length > 0 ? passwordColumns[0].COLUMN_NAME : 'password_hash';
+      
+      setStatements.push(`${passwordColumnName} = ?`);
+      values.push(hashedPassword);
+      delete updateData.password;
+    }
+    
+    // Handle all other fields
+    for (const [key, value] of Object.entries(updateData)) {
+      setStatements.push(`${key} = ?`);
+      values.push(value);
+    }
+    
+    // Finalize the query with WHERE condition
+    values.push(userId);
+    const updateQuery = `UPDATE users SET ${setStatements.join(', ')} WHERE ${idColumnName} = ?`;
+    
+    console.log(`Executing update query: ${updateQuery}`);
+    
+    const result = await db.query(updateQuery, values);
+    console.log('Update result:', result);
+    
+    return result.affectedRows > 0;
+  } catch (error) {
+    console.error('Error updating user:', error);
+    throw error;
+  }
+}
+
+// Verify a user's password
+async function verifyPassword(username, password) {
+  try {
+    const user = await getUserByUsername(username);
+    if (!user) {
+      return false;
+    }
+    
+    // Check which password field the user record has
+    const passwordField = user.password_hash ? 'password_hash' : 'password';
+    
+    return await bcrypt.compare(password, user[passwordField]);
+  } catch (error) {
+    console.error('Error verifying password:', error);
+    return false;
+  }
+}
+
 module.exports = {
   initializeUserTable,
   getUserByUsername,
   getUserByEmail,
   getUserById,
   createUser,
-  verifyUser
+  verifyUser,
+  updateUser,
+  verifyPassword
 };

@@ -247,9 +247,20 @@ async function getUserProfile(req, res) {
     req.session.user = user;
     req.session.save();
     
+    // Parse favorite games if exists
+    let favoriteGames = [];
+    if (user.favorite_games) {
+      try {
+        favoriteGames = JSON.parse(user.favorite_games);
+      } catch (err) {
+        console.error('Error parsing favorite games JSON:', err);
+      }
+    }
+    
     res.render('userpage', { 
       user: user,
-      isAdmin: user.is_admin 
+      isAdmin: user.is_admin,
+      favorite_games: favoriteGames
     });
   } catch (error) {
     console.error('Error getting user profile:', error);
@@ -267,6 +278,26 @@ async function updateUserProfile(req, res) {
     
     const userId = req.session.user.id;
     const { email, current_password, new_password, confirm_password } = req.body;
+    
+    // Log the entire request body for debugging
+    console.log('Form data received:', req.body);
+    
+    // Handle favorite games properly - there are three possible forms the data could take
+    let favoriteGamesArray = [];
+    
+    if (req.body.favorite_games) {
+      // Case 1: If it comes as favorite_games and is already an array
+      favoriteGamesArray = Array.isArray(req.body.favorite_games) 
+        ? req.body.favorite_games 
+        : [req.body.favorite_games];
+    } else if (req.body['favorite_games[]']) {
+      // Case 2: If it comes as favorite_games[] (common with some form submissions)
+      favoriteGamesArray = Array.isArray(req.body['favorite_games[]']) 
+        ? req.body['favorite_games[]'] 
+        : [req.body['favorite_games[]']];
+    }
+    
+    console.log('Favorite games selected:', favoriteGamesArray);
     
     // Get current user data
     const user = await UserModel.getUserById(userId);
@@ -315,6 +346,9 @@ async function updateUserProfile(req, res) {
       passwordChanged = true;
     }
     
+    // Always save favorite games (even if empty - user might want to clear their favorites)
+    updateData.favorite_games = JSON.stringify(favoriteGamesArray);
+    
     // Only proceed if there are changes to make
     if (Object.keys(updateData).length > 0) {
       // Update the user profile
@@ -331,18 +365,24 @@ async function updateUserProfile(req, res) {
           return res.render('userpage', { 
             error: 'Profile updated but session could not be refreshed', 
             success: 'Profile updated successfully!',
-            user: req.session.user 
+            user: req.session.user,
+            favorite_games: favoriteGamesArray
           });
         }
         
         return res.render('userpage', { 
           success: passwordChanged ? 'Profile and password updated successfully!' : 'Profile updated successfully!',
-          user: updatedUser
+          user: updatedUser,
+          favorite_games: favoriteGamesArray
         });
       });
     } else {
       // No changes were made
-      return res.render('userpage', { info: 'No changes made to profile', user: req.session.user });
+      return res.render('userpage', { 
+        info: 'No changes made to profile', 
+        user: req.session.user,
+        favorite_games: user.favorite_games ? JSON.parse(user.favorite_games) : []
+      });
     }
   } catch (error) {
     console.error('Error updating user profile:', error);

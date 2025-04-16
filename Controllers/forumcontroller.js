@@ -129,8 +129,14 @@ async function addComment(req, res) {
       });
     }
 
-    // TESTING: Use a fixed user ID (1) for all comments instead of session
-    const userId = 1; // Using user ID 1 for testing
+    // Get user ID from session if user is logged in
+    let userId = null;
+    if (req.session && req.session.loggedIn && req.session.user) {
+      userId = req.session.user.id || req.session.user.user_id;
+      console.log('User logged in, associating comment with user ID:', userId);
+    } else {
+      console.log('Comment posted by anonymous user (not logged in)');
+    }
     
     // Add the comment to the database
     const result = await CommentModel.addComment(post_id, content, userId);

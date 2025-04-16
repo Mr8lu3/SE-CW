@@ -7,6 +7,10 @@ html(lang="en")
     // Add Three.js and Vanta.js scripts
     script(src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js")
     script(src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.fog.min.js")
+    // Add jQuery and Select2 for searchable dropdowns
+    script(src="https://code.jquery.com/jquery-3.6.0.min.js")
+    link(href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet")
+    script(src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js")
     style.
       body {
         font-family: Arial, sans-serif;
@@ -160,6 +164,49 @@ html(lang="en")
 
       .details strong {
         color: #8C6EFF;
+      }
+
+      /* Favorite Games List in Profile Section */
+      .favorite-games-list {
+        margin-top: 25px;
+        text-align: left;
+      }
+      
+      .favorite-games-list h3 {
+        color: #8C6EFF;
+        font-size: 1.2em;
+        margin-bottom: 10px;
+        text-align: center;
+      }
+      
+      .user-games-list {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+      }
+      
+      .user-game-item {
+        background-color: rgba(95, 67, 178, 0.5);
+        margin: 6px 0;
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-size: 0.9em;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      }
+      
+      .user-game-item:hover {
+        background-color: rgba(95, 67, 178, 0.8);
+        transform: translateX(3px);
+        box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+      }
+      
+      .no-games {
+        text-align: center;
+        color: rgba(255,255,255,0.5);
+        font-style: italic;
+        font-size: 0.9em;
+        margin: 10px 0;
       }
 
       /* Stats Section */
@@ -338,6 +385,80 @@ html(lang="en")
         z-index: 10; /* Ensure the footer stays above the background */
         backdrop-filter: blur(5px); /* Apply a blur effect for better text readability */
       }
+      
+      /* Game selection styling */
+      .game-selection {
+        margin-top: 30px;
+        text-align: left;
+      }
+      
+      .game-selection h3 {
+        color: #8C6EFF;
+        margin-bottom: 15px;
+      }
+      
+      .select2-container--default {
+        width: 100% !important;
+      }
+      
+      .select2-container--default .select2-selection--single,
+      .select2-container--default .select2-selection--multiple {
+        background-color: rgba(51, 51, 51, 0.7) !important;
+        border: 1px solid rgba(95, 67, 178, 0.3) !important;
+        border-radius: 5px !important;
+        color: #fff !important;
+      }
+      
+      .select2-container--default .select2-selection--multiple .select2-selection__choice {
+        background-color: rgba(95, 67, 178, 0.7) !important;
+        color: #fff !important;
+        border: 1px solid rgba(95, 67, 178, 0.5) !important;
+        border-radius: 3px !important;
+        padding: 5px 8px !important;
+      }
+      
+      .select2-container--default .select2-results__option--highlighted[aria-selected] {
+        background-color: #5F43B2 !important;
+      }
+      
+      .select2-container--default .select2-results__option[aria-selected=true] {
+        background-color: rgba(95, 67, 178, 0.5) !important;
+      }
+      
+      .select2-container--open .select2-dropdown {
+        background-color: rgba(34, 34, 34, 0.95) !important;
+        border: 1px solid rgba(95, 67, 178, 0.5) !important;
+      }
+      
+      .select2-container--default .select2-results__option {
+        color: #fff !important;
+      }
+      
+      .select2-search__field {
+        color: #fff !important;
+        background-color: rgba(51, 51, 51, 0.7) !important;
+      }
+      
+      .game-list {
+        margin-top: 20px;
+      }
+      
+      .game-item {
+        display: inline-block;
+        background-color: rgba(95, 67, 178, 0.6);
+        color: white;
+        padding: 8px 15px;
+        margin: 5px;
+        border-radius: 20px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+      }
+      
+      .game-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+        background-color: rgba(95, 67, 178, 0.8);
+      }
 
   body.dark-theme
     // Vanta background div
@@ -372,6 +493,15 @@ html(lang="en")
           p
             | Account Creation: 
             strong= user.created_at ? new Date(user.created_at).toLocaleDateString() : 'Unknown'
+          
+          .favorite-games-list
+            h3 My Favorite Games
+            if favorite_games && favorite_games.length > 0
+              ul.user-games-list
+                each game in favorite_games
+                  li.user-game-item= game
+            else
+              p.no-games No favorite games selected yet
       .stats-section
         if error
           .error-message
@@ -396,6 +526,112 @@ html(lang="en")
           .form-group
             label(for='confirm_password') Confirm New Password:
             input(type='password' id='confirm_password' name='confirm_password' placeholder='Confirm new password')
+          
+          .game-selection
+            h3 My Top 5 Games
+            .form-group
+              label(for='favorite_games') Select your favorite games:
+              select.favorite-games-select(id='favorite_games' name='favorite_games[]' multiple='multiple')
+                option(value='') Type to search games...
+                
+                optgroup(label='Action')
+                  option(value='The Legend of Zelda: Breath of the Wild', selected=favorite_games && favorite_games.includes('The Legend of Zelda: Breath of the Wild')) The Legend of Zelda: Breath of the Wild
+                  option(value='God of War', selected=favorite_games && favorite_games.includes('God of War')) God of War
+                  option(value='Grand Theft Auto V', selected=favorite_games && favorite_games.includes('Grand Theft Auto V')) Grand Theft Auto V
+                  option(value='Red Dead Redemption 2', selected=favorite_games && favorite_games.includes('Red Dead Redemption 2')) Red Dead Redemption 2
+                  option(value='Ghost of Tsushima', selected=favorite_games && favorite_games.includes('Ghost of Tsushima')) Ghost of Tsushima
+                  option(value='Elden Ring', selected=favorite_games && favorite_games.includes('Elden Ring')) Elden Ring
+                  option(value='Horizon Zero Dawn', selected=favorite_games && favorite_games.includes('Horizon Zero Dawn')) Horizon Zero Dawn
+                  option(value='Marvel\'s Spider-Man', selected=favorite_games && favorite_games.includes('Marvel\'s Spider-Man')) Marvel's Spider-Man
+                  option(value='Assassin\'s Creed Valhalla', selected=favorite_games && favorite_games.includes('Assassin\'s Creed Valhalla')) Assassin's Creed Valhalla
+                  option(value='Sekiro: Shadows Die Twice', selected=favorite_games && favorite_games.includes('Sekiro: Shadows Die Twice')) Sekiro: Shadows Die Twice
+                
+                optgroup(label='RPG')
+                  option(value='The Witcher 3: Wild Hunt', selected=favorite_games && favorite_games.includes('The Witcher 3: Wild Hunt')) The Witcher 3: Wild Hunt
+                  option(value='Final Fantasy VII Remake', selected=favorite_games && favorite_games.includes('Final Fantasy VII Remake')) Final Fantasy VII Remake
+                  option(value='Elder Scrolls V: Skyrim', selected=favorite_games && favorite_games.includes('Elder Scrolls V: Skyrim')) Elder Scrolls V: Skyrim
+                  option(value='Fallout 4', selected=favorite_games && favorite_games.includes('Fallout 4')) Fallout 4
+                  option(value='Mass Effect Legendary Edition', selected=favorite_games && favorite_games.includes('Mass Effect Legendary Edition')) Mass Effect Legendary Edition
+                  option(value='Dragon Age: Inquisition', selected=favorite_games && favorite_games.includes('Dragon Age: Inquisition')) Dragon Age: Inquisition
+                  option(value='Persona 5 Royal', selected=favorite_games && favorite_games.includes('Persona 5 Royal')) Persona 5 Royal
+                  option(value='Cyberpunk 2077', selected=favorite_games && favorite_games.includes('Cyberpunk 2077')) Cyberpunk 2077
+                  option(value='Divinity: Original Sin 2', selected=favorite_games && favorite_games.includes('Divinity: Original Sin 2')) Divinity: Original Sin 2
+                  option(value='Dark Souls III', selected=favorite_games && favorite_games.includes('Dark Souls III')) Dark Souls III
+                
+                optgroup(label='Shooter')
+                  option(value='Call of Duty: Warzone', selected=favorite_games && favorite_games.includes('Call of Duty: Warzone')) Call of Duty: Warzone
+                  option(value='DOOM Eternal', selected=favorite_games && favorite_games.includes('DOOM Eternal')) DOOM Eternal
+                  option(value='Halo Infinite', selected=favorite_games && favorite_games.includes('Halo Infinite')) Halo Infinite
+                  option(value='Apex Legends', selected=favorite_games && favorite_games.includes('Apex Legends')) Apex Legends
+                  option(value='Destiny 2', selected=favorite_games && favorite_games.includes('Destiny 2')) Destiny 2
+                  option(value='Overwatch', selected=favorite_games && favorite_games.includes('Overwatch')) Overwatch
+                  option(value='Fortnite', selected=favorite_games && favorite_games.includes('Fortnite')) Fortnite
+                  option(value='Valorant', selected=favorite_games && favorite_games.includes('Valorant')) Valorant
+                  option(value='Counter-Strike: Global Offensive', selected=favorite_games && favorite_games.includes('Counter-Strike: Global Offensive')) Counter-Strike: Global Offensive
+                  option(value='Rainbow Six Siege', selected=favorite_games && favorite_games.includes('Rainbow Six Siege')) Rainbow Six Siege
+                
+                optgroup(label='Strategy')
+                  option(value='Civilization VI', selected=favorite_games && favorite_games.includes('Civilization VI')) Civilization VI
+                  option(value='StarCraft II', selected=favorite_games && favorite_games.includes('StarCraft II')) StarCraft II
+                  option(value='Age of Empires IV', selected=favorite_games && favorite_games.includes('Age of Empires IV')) Age of Empires IV
+                  option(value='Total War: Three Kingdoms', selected=favorite_games && favorite_games.includes('Total War: Three Kingdoms')) Total War: Three Kingdoms
+                  option(value='XCOM 2', selected=favorite_games && favorite_games.includes('XCOM 2')) XCOM 2
+                  option(value='Fire Emblem: Three Houses', selected=favorite_games && favorite_games.includes('Fire Emblem: Three Houses')) Fire Emblem: Three Houses
+                  option(value='Into the Breach', selected=favorite_games && favorite_games.includes('Into the Breach')) Into the Breach
+                  option(value='Crusader Kings III', selected=favorite_games && favorite_games.includes('Crusader Kings III')) Crusader Kings III
+                  option(value='Stellaris', selected=favorite_games && favorite_games.includes('Stellaris')) Stellaris
+                  option(value='Company of Heroes 2', selected=favorite_games && favorite_games.includes('Company of Heroes 2')) Company of Heroes 2
+                
+                optgroup(label='Adventure')
+                  option(value='Uncharted 4: A Thief\'s End', selected=favorite_games && favorite_games.includes('Uncharted 4: A Thief\'s End')) Uncharted 4: A Thief's End
+                  option(value='Death Stranding', selected=favorite_games && favorite_games.includes('Death Stranding')) Death Stranding
+                  option(value='A Plague Tale: Requiem', selected=favorite_games && favorite_games.includes('A Plague Tale: Requiem')) A Plague Tale: Requiem
+                  option(value='Life is Strange', selected=favorite_games && favorite_games.includes('Life is Strange')) Life is Strange
+                  option(value='The Last of Us Part II', selected=favorite_games && favorite_games.includes('The Last of Us Part II')) The Last of Us Part II
+                  option(value='Detroit: Become Human', selected=favorite_games && favorite_games.includes('Detroit: Become Human')) Detroit: Become Human
+                  option(value='It Takes Two', selected=favorite_games && favorite_games.includes('It Takes Two')) It Takes Two
+                  option(value='Resident Evil Village', selected=favorite_games && favorite_games.includes('Resident Evil Village')) Resident Evil Village
+                  option(value='Control', selected=favorite_games && favorite_games.includes('Control')) Control
+                  option(value='Disco Elysium', selected=favorite_games && favorite_games.includes('Disco Elysium')) Disco Elysium
+                
+                optgroup(label='Sports & Racing')
+                  option(value='FIFA 23', selected=favorite_games && favorite_games.includes('FIFA 23')) FIFA 23
+                  option(value='NBA 2K25', selected=favorite_games && favorite_games.includes('NBA 2K25')) NBA 2K25
+                  option(value='Madden NFL 25', selected=favorite_games && favorite_games.includes('Madden NFL 25')) Madden NFL 25
+                  option(value='Gran Turismo 7', selected=favorite_games && favorite_games.includes('Gran Turismo 7')) Gran Turismo 7
+                  option(value='Forza Horizon 5', selected=favorite_games && favorite_games.includes('Forza Horizon 5')) Forza Horizon 5
+                  option(value='F1 2025', selected=favorite_games && favorite_games.includes('F1 2025')) F1 2025
+                  option(value='Mario Kart 8 Deluxe', selected=favorite_games && favorite_games.includes('Mario Kart 8 Deluxe')) Mario Kart 8 Deluxe
+                  option(value='Rocket League', selected=favorite_games && favorite_games.includes('Rocket League')) Rocket League
+                  option(value='Tony Hawk\'s Pro Skater 1+2', selected=favorite_games && favorite_games.includes('Tony Hawk\'s Pro Skater 1+2')) Tony Hawk's Pro Skater 1+2
+                  option(value='EA Sports FC 25', selected=favorite_games && favorite_games.includes('EA Sports FC 25')) EA Sports FC 25
+                
+                optgroup(label='Indie')
+                  option(value='Hades', selected=favorite_games && favorite_games.includes('Hades')) Hades
+                  option(value='Hollow Knight', selected=favorite_games && favorite_games.includes('Hollow Knight')) Hollow Knight
+                  option(value='Stardew Valley', selected=favorite_games && favorite_games.includes('Stardew Valley')) Stardew Valley
+                  option(value='Celeste', selected=favorite_games && favorite_games.includes('Celeste')) Celeste
+                  option(value='Undertale', selected=favorite_games && favorite_games.includes('Undertale')) Undertale
+                  option(value='Among Us', selected=favorite_games && favorite_games.includes('Among Us')) Among Us
+                  option(value='Dead Cells', selected=favorite_games && favorite_games.includes('Dead Cells')) Dead Cells
+                  option(value='Ori and the Will of the Wisps', selected=favorite_games && favorite_games.includes('Ori and the Will of the Wisps')) Ori and the Will of the Wisps
+                  option(value='Cuphead', selected=favorite_games && favorite_games.includes('Cuphead')) Cuphead
+                  option(value='Hades II', selected=favorite_games && favorite_games.includes('Hades II')) Hades II
+                
+                optgroup(label='MMO')
+                  option(value='World of Warcraft', selected=favorite_games && favorite_games.includes('World of Warcraft')) World of Warcraft
+                  option(value='Final Fantasy XIV', selected=favorite_games && favorite_games.includes('Final Fantasy XIV')) Final Fantasy XIV
+                  option(value='Elder Scrolls Online', selected=favorite_games && favorite_games.includes('Elder Scrolls Online')) Elder Scrolls Online
+                  option(value='Guild Wars 2', selected=favorite_games && favorite_games.includes('Guild Wars 2')) Guild Wars 2
+                  option(value='Black Desert Online', selected=favorite_games && favorite_games.includes('Black Desert Online')) Black Desert Online
+                  option(value='New World', selected=favorite_games && favorite_games.includes('New World')) New World
+                  option(value='Star Wars: The Old Republic', selected=favorite_games && favorite_games.includes('Star Wars: The Old Republic')) Star Wars: The Old Republic
+                  option(value='Lost Ark', selected=favorite_games && favorite_games.includes('Lost Ark')) Lost Ark
+                  option(value='Albion Online', selected=favorite_games && favorite_games.includes('Albion Online')) Albion Online
+                  option(value='EVE Online', selected=favorite_games && favorite_games.includes('EVE Online')) EVE Online
+                
+            .game-list#selectedGames
+              // Selected games will appear here
           
           .form-actions
             button(type='submit') Save Changes
@@ -422,4 +658,52 @@ html(lang="en")
         blurFactor: 0.60,
         speed: 1.50,
         zoom: 0.80
+      });
+      
+      // Initialize Select2 for favorite games selection
+      $(document).ready(function() {
+        // Initialize Select2
+        $('.favorite-games-select').select2({
+          placeholder: "Search and select up to 5 games...",
+          allowClear: true,
+          maximumSelectionLength: 5,
+          width: '100%',
+          dropdownCssClass: 'select2-dropdown-dark',
+          templateResult: formatGameOption
+        });
+        
+        // Function to format each game option in the dropdown
+        function formatGameOption(game) {
+          if (!game.id) {
+            return game.text;
+          }
+          
+          return $('<span><strong>' + game.text + '</strong></span>');
+        }
+        
+        // Event handler when selection changes
+        $('.favorite-games-select').on('change', function() {
+          updateSelectedGames();
+        });
+        
+        // Function to update the visual representation of selected games
+        function updateSelectedGames() {
+          const selectedGames = $('.favorite-games-select').val() || [];
+          const gamesList = $('#selectedGames');
+          
+          // Clear current list
+          gamesList.empty();
+          
+          // Add each selected game as a badge
+          if (selectedGames.length > 0) {
+            selectedGames.forEach(function(game) {
+              gamesList.append('<span class="game-item">' + game + '</span>');
+            });
+          } else {
+            gamesList.append('<p>No favorite games selected yet.</p>');
+          }
+        }
+        
+        // Initial update of selected games (for when there are pre-selected values)
+        updateSelectedGames();
       });
