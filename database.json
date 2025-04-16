@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "driver": "mysql",
+    "host": "db",
+    "port": "3306",
+    "user": "root",
+    "password": "password",
+    "database": "Game-Tips-DB",
+    "multipleStatements": true
+  },
+  "docker": {
+    "driver": "mysql",
+    "host": "db",
+    "port": "3306",
+    "user": "root", 
+    "password": "password",
+    "database": "Game-Tips-DB",
+    "multipleStatements": true
+  }
+}

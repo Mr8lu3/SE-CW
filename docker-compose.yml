@@ -6,14 +6,14 @@ services:
     volumes:
       - .:/src
       - /src/node_modules
-    command: supervisor -e 'js,pug,html' app/app.js
+    command: >
+      sh -c "node Database/db-sync.js && supervisor -e 'js,pug,html' app/app.js"
     ports:
       - "3000:3000"
     depends_on:
       - db
     environment:
       - MYSQL_HOST=db
-      # Removed MYSQL_USER=root to avoid conflicts
       - MYSQL_ROOT_PASSWORD=password
       - MYSQL_PASSWORD=password
       - MYSQL_DATABASE=Game-Tips-DB
