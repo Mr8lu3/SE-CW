@@ -32,18 +32,81 @@ async function addComment(postId, content, userId = null) {
       throw new Error('Forum post not found');
     }
     
-    // Ensure table exists - this is a more reliable way to handle table creation
-    const createTableQuery = `
-      CREATE TABLE IF NOT EXISTS forum_comments (
-        comment_id INT AUTO_INCREMENT PRIMARY KEY,
-        post_id INT NOT NULL,
-        user_id INT NULL,
-        content TEXT NOT NULL,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        INDEX post_idx (post_id)
-      );
+    // Check if the forum_comments table exists
+    const tableExistsQuery = `
+      SELECT COUNT(*) as tableExists 
+      FROM information_schema.tables 
+      WHERE table_schema = DATABASE() 
+      AND table_name = 'forum_comments'
     `;
-    await db.query(createTableQuery);
+    
+    const tableExists = await db.query(tableExistsQuery);
+    
+    // If table doesn't exist or needs to be recreated
+    if (tableExists[0].tableExists === 0) {
+      console.log('Creating forum_comments table...');
+      
+      // Create the table with proper AUTO_INCREMENT
+      const createTableQuery = `
+        CREATE TABLE forum_comments (
+          comment_id INT AUTO_INCREMENT PRIMARY KEY,
+          post_id INT NOT NULL,
+          user_id INT NULL,
+          content TEXT NOT NULL,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          INDEX post_idx (post_id)
+        );
+      `;
+      await db.query(createTableQuery);
+      console.log('forum_comments table created successfully');
+    } else {
+      // Table exists - check if comment_id is AUTO_INCREMENT
+      console.log('Checking forum_comments table structure...');
+      
+      const autoIncrementQuery = `
+        SELECT COLUMN_NAME, EXTRA
+        FROM information_schema.COLUMNS 
+        WHERE TABLE_SCHEMA = DATABASE() 
+        AND TABLE_NAME = 'forum_comments' 
+        AND COLUMN_NAME = 'comment_id' 
+      `;
+      
+      const columnInfo = await db.query(autoIncrementQuery);
+      
+      if (columnInfo.length === 0) {
+        console.error('comment_id column not found in forum_comments table');
+        throw new Error('Database schema issue: comment_id column not found');
+      }
+      
+      // If comment_id exists but doesn't have AUTO_INCREMENT
+      if (!columnInfo[0].EXTRA.includes('auto_increment')) {
+        console.log('Altering comment_id to be AUTO_INCREMENT...');
+        
+        // Try to modify the table structure
+        try {
+          // We need to ensure the column is the primary key and auto-increment
+          await db.query('ALTER TABLE forum_comments MODIFY comment_id INT AUTO_INCREMENT PRIMARY KEY');
+          console.log('comment_id column set to AUTO_INCREMENT');
+        } catch (alterError) {
+          console.error('Error modifying forum_comments table:', alterError);
+          
+          // Fallback: Try to get the next comment_id manually
+          console.log('Using fallback method to generate comment_id...');
+          const maxIdQuery = 'SELECT COALESCE(MAX(comment_id), 0) + 1 AS next_id FROM forum_comments';
+          const nextId = await db.query(maxIdQuery);
+          
+          // Insert with explicit comment_id
+          const insertQueryWithId = `
+            INSERT INTO forum_comments (comment_id, post_id, user_id, content) 
+            VALUES (?, ?, ?, ?);
+          `;
+          
+          const result = await db.query(insertQueryWithId, [nextId[0].next_id, postId, userId, content]);
+          console.log(`Comment added successfully with manually generated ID: ${nextId[0].next_id}`);
+          return result;
+        }
+      }
+    }
     
     // Now insert the comment using a simpler query
     const insertQuery = `

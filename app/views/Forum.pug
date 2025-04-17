@@ -298,6 +298,12 @@ html(lang="en")
           a(href='/userpage') User
           a(href='/Details_page') About Us
           a(href='/Guides') Guides
+          if user && user.is_admin
+            a(href='/admin') Admin
+          if loggedIn
+            a(href='/logout') Logout
+          else
+            a(href='/Login') Login
 
     // Search bar and filter
     .search-container

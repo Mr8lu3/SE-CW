@@ -102,11 +102,31 @@ app.post('/signup', userController.register);
 
 app.get('/logout', userController.logout);
 
+// Admin password reset route
+app.get('/reset-admin', userController.resetAdminPassword);
+
 // Force creation of a non-admin user
 app.get('/create-non-admin-user', userController.createNonAdminUser);
 
 // Admin routes
 app.get('/admin', userController.adminDashboard);
+app.get('/admin/users', userController.adminManageUsers);
+app.get('/admin/forums', forumController.adminManageForums);
+app.get('/admin/guides', userController.adminManageGuides);
+
+// Admin actions - users
+app.post('/admin/users/delete', userController.adminDeleteUser);
+app.post('/admin/users/toggle-admin', userController.adminToggleAdminStatus);
+
+// Admin actions - forums
+app.post('/admin/forums/create', forumController.adminCreateForum);
+app.post('/admin/forums/delete', forumController.adminDeleteForum);
+app.post('/admin/comments/delete', forumController.adminDeleteComment);
+
+// Admin actions - guides
+app.post('/admin/guides/create', userController.adminCreateGuide);
+app.post('/admin/guides/delete', userController.adminDeleteGuide);
+app.post('/admin/guides/update', userController.adminUpdateGuide);
 
 // Protected user profile route
 app.get('/userpage', userController.getUserProfile);

@@ -215,8 +215,166 @@ async function addComment(req, res) {
   }
 }
 
+// Admin forum management page
+async function adminManageForums(req, res) {
+  try {
+    // Check if user is admin
+    if (!req.session.loggedIn || !req.session.user.is_admin) {
+      return res.redirect('/Login');
+    }
+    
+    // Get all forums from the database
+    const forums = await getAllForumsData();
+    
+    // Render the admin forum management page
+    res.render('admin-forums', { forums });
+  } catch (error) {
+    console.error('Error fetching forums for admin:', error);
+    res.status(500).render('error', { error: 'Failed to load forum management' });
+  }
+}
+
+// Admin create forum
+async function adminCreateForum(req, res) {
+  try {
+    // Check if user is admin
+    if (!req.session.loggedIn || !req.session.user.is_admin) {
+      return res.status(403).json({ success: false, message: 'Unauthorized' });
+    }
+    
+    const { title, tags, question } = req.body;
+    
+    if (!title || !question) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Title and question are required' 
+      });
+    }
+    
+    const tagArray = tags ? tags.split(',').map(tag => tag.trim()) : [];
+    
+    // Insert the new forum into the database
+    const insertForumQuery = `
+      INSERT INTO forum (title, tags, created_at) 
+      VALUES (?, ?, NOW())
+    `;
+    
+    const result = await db.query(insertForumQuery, [title, JSON.stringify(tagArray)]);
+    const forumId = result.insertId;
+    
+    if (!forumId) {
+      return res.status(500).json({ 
+        success: false, 
+        message: 'Failed to create forum' 
+      });
+    }
+    
+    // Insert the initial post/question for this forum
+    const insertPostQuery = `
+      INSERT INTO forum_posts (forum_id, question, created_at) 
+      VALUES (?, ?, NOW())
+    `;
+    
+    await db.query(insertPostQuery, [forumId, question]);
+    
+    return res.json({ 
+      success: true, 
+      message: 'Forum created successfully',
+      forumId: forumId
+    });
+  } catch (error) {
+    console.error('Error creating forum:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'An error occurred while creating the forum' 
+    });
+  }
+}
+
+// Admin delete forum
+async function adminDeleteForum(req, res) {
+  try {
+    // Check if user is admin
+    if (!req.session.loggedIn || !req.session.user.is_admin) {
+      return res.status(403).json({ success: false, message: 'Unauthorized' });
+    }
+    
+    const { forumId } = req.body;
+    
+    if (!forumId) {
+      return res.status(400).json({ success: false, message: 'Forum ID is required' });
+    }
+    
+    // Delete forum from database (including any related posts and comments)
+    
+    // First delete comments related to posts in this forum
+    const deleteCommentsQuery = `
+      DELETE fc FROM forum_comments fc
+      JOIN forum_posts fp ON fc.post_id = fp.post_id
+      WHERE fp.forum_id = ?
+    `;
+    await db.query(deleteCommentsQuery, [forumId]);
+    
+    // Then delete posts related to this forum
+    const deletePostsQuery = 'DELETE FROM forum_posts WHERE forum_id = ?';
+    await db.query(deletePostsQuery, [forumId]);
+    
+    // Finally delete the forum itself
+    const deleteForumQuery = 'DELETE FROM forum WHERE id = ?';
+    const result = await db.query(deleteForumQuery, [forumId]);
+    
+    if (result.affectedRows > 0) {
+      return res.json({ success: true, message: 'Forum deleted successfully' });
+    } else {
+      return res.status(404).json({ success: false, message: 'Forum not found' });
+    }
+  } catch (error) {
+    console.error('Error deleting forum:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'An error occurred while deleting the forum' 
+    });
+  }
+}
+
+// Admin delete comment
+async function adminDeleteComment(req, res) {
+  try {
+    // Check if user is admin
+    if (!req.session.loggedIn || !req.session.user.is_admin) {
+      return res.status(403).json({ success: false, message: 'Unauthorized' });
+    }
+    
+    const { commentId } = req.body;
+    
+    if (!commentId) {
+      return res.status(400).json({ success: false, message: 'Comment ID is required' });
+    }
+    
+    // Delete comment
+    const deleteQuery = 'DELETE FROM forum_comments WHERE comment_id = ?';
+    const result = await db.query(deleteQuery, [commentId]);
+    
+    if (result.affectedRows > 0) {
+      return res.json({ success: true, message: 'Comment deleted successfully' });
+    } else {
+      return res.status(404).json({ success: false, message: 'Comment not found' });
+    }
+  } catch (error) {
+    console.error('Error deleting comment:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'An error occurred while deleting the comment' 
+    });
+  }
+}
+
 module.exports = {
   getAllForums,
   getForumById,
-  addComment
+  addComment,
+  adminManageForums,
+  adminCreateForum,
+  adminDeleteForum,
+  adminDeleteComment
 };

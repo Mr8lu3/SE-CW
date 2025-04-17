@@ -52,7 +52,8 @@ async function login(req, res) {
         return res.redirect('/admin');
       }
       
-      res.redirect('/');
+      // Redirect to userpage instead of homepage
+      res.redirect('/userpage');
     });
   } catch (error) {
     console.error('Login error:', error);
@@ -134,8 +135,9 @@ async function register(req, res) {
           return res.render('signup', { error: 'Account created but session could not be established. Please log in.' });
         }
         
-        console.log('User session created, redirecting to homepage');
-        res.redirect('/');
+        console.log('User session created, redirecting to userpage');
+        // Redirect to userpage instead of homepage
+        res.redirect('/userpage');
       });
     } catch (createError) {
       console.error('Error during user creation step:', createError);
@@ -200,6 +202,46 @@ async function createNonAdminUser(req, res) {
       message: 'Failed to create non-admin user', 
       error: error.message 
     });
+  }
+}
+
+// Reset admin password
+async function resetAdminPassword(req, res) {
+  try {
+    console.log('Attempting to reset admin password...');
+    
+    // Check if admin exists
+    const adminUser = await UserModel.getUserByUsername('admin');
+    
+    if (!adminUser) {
+      console.log('Admin user does not exist, creating it...');
+      // If admin doesn't exist, create it
+      const userId = await UserModel.createUser('admin', 'admin123', 'admin@gamingtips.com');
+      
+      if (userId) {
+        // Update to make admin
+        await db.query('UPDATE users SET is_admin = true, role_id = 1 WHERE username = ?', ['admin']);
+        console.log('Admin user created successfully');
+        return res.render('Login', { success: 'Admin account created! Username: admin, Password: admin123' });
+      }
+    } else {
+      console.log('Admin user exists, resetting password...');
+      
+      // Reset admin password to admin123
+      const updateResult = await UserModel.updateUser(adminUser.id || adminUser.user_id, {
+        password: 'admin123'
+      });
+      
+      if (updateResult) {
+        console.log('Admin password reset successfully');
+        return res.render('Login', { success: 'Admin password reset! Username: admin, Password: admin123' });
+      }
+    }
+    
+    return res.render('Login', { error: 'Failed to reset admin password' });
+  } catch (error) {
+    console.error('Error resetting admin password:', error);
+    return res.render('Login', { error: 'An error occurred while resetting the admin password' });
   }
 }
 
@@ -606,6 +648,248 @@ function logUserData(prefix, user) {
   console.log('- All properties:', Object.keys(user));
 }
 
+// Admin user management page
+async function adminManageUsers(req, res) {
+  try {
+    // Check if user is admin
+    if (!req.session.loggedIn || !req.session.user.is_admin) {
+      return res.redirect('/Login');
+    }
+    
+    // Get all users from database
+    const query = 'SELECT * FROM users ORDER BY created_at DESC';
+    const users = await db.query(query);
+    
+    // Render the admin users management page
+    res.render('admin-users', { 
+      users,
+      currentUser: req.session.user
+    });
+  } catch (error) {
+    console.error('Error fetching users for admin:', error);
+    res.status(500).render('error', { error: 'Failed to load user management' });
+  }
+}
+
+// Admin delete user
+async function adminDeleteUser(req, res) {
+  try {
+    // Check if user is admin
+    if (!req.session.loggedIn || !req.session.user.is_admin) {
+      return res.status(403).json({ success: false, message: 'Unauthorized' });
+    }
+    
+    const userId = req.body.userId;
+    
+    if (!userId) {
+      return res.status(400).json({ success: false, message: 'User ID is required' });
+    }
+    
+    // Check if attempting to delete self
+    if (userId == req.session.user.id || userId == req.session.user.user_id) {
+      return res.status(400).json({ success: false, message: 'Cannot delete your own account' });
+    }
+    
+    // Delete user
+    const deleteQuery = 'DELETE FROM users WHERE user_id = ? OR id = ?';
+    const result = await db.query(deleteQuery, [userId, userId]);
+    
+    if (result.affectedRows > 0) {
+      return res.json({ success: true, message: 'User deleted successfully' });
+    } else {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    res.status(500).json({ success: false, message: 'An error occurred while deleting the user' });
+  }
+}
+
+// Admin toggle user's admin status
+async function adminToggleAdminStatus(req, res) {
+  try {
+    // Check if user is admin
+    if (!req.session.loggedIn || !req.session.user.is_admin) {
+      return res.status(403).json({ success: false, message: 'Unauthorized' });
+    }
+    
+    const userId = req.body.userId;
+    const makeAdmin = req.body.makeAdmin === 'true'; 
+    
+    if (!userId) {
+      return res.status(400).json({ success: false, message: 'User ID is required' });
+    }
+    
+    // Update user's admin status
+    const updateQuery = 'UPDATE users SET is_admin = ?, role_id = ? WHERE user_id = ? OR id = ?';
+    const roleId = makeAdmin ? 1 : 2; // 1 for admin, 2 for regular user
+    const result = await db.query(updateQuery, [makeAdmin, roleId, userId, userId]);
+    
+    if (result.affectedRows > 0) {
+      return res.json({ 
+        success: true, 
+        message: `User is now ${makeAdmin ? 'an admin' : 'a regular user'}`
+      });
+    } else {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+  } catch (error) {
+    console.error('Error toggling admin status:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'An error occurred while updating user status' 
+    });
+  }
+}
+
+// Admin guides management page
+async function adminManageGuides(req, res) {
+  try {
+    // Check if user is admin
+    if (!req.session.loggedIn || !req.session.user.is_admin) {
+      return res.redirect('/Login');
+    }
+    
+    // For now, we'll use the static guides data
+    // In a real implementation, this would come from a database
+    const guides = [
+      {
+        id: 1,
+        title: 'How to Improve Your FPS in Games',
+        category: 'fps',
+        content: 'In this guide, we will explore various methods to improve your FPS in games...',
+        publishDate: '2025-03-16'
+      },
+      {
+        id: 2,
+        title: 'Best RPG Builds for Beginners',
+        category: 'rpg',
+        content: 'RPGs can be overwhelming for beginners, so we\'ve compiled the best builds...',
+        publishDate: '2025-03-10'
+      },
+      {
+        id: 3,
+        title: 'Essential Mods for Skyrim',
+        category: 'mods',
+        content: 'Mods can drastically change the way you experience Skyrim...',
+        publishDate: '2025-03-05'
+      }
+    ];
+    
+    // Render the admin guides management page
+    res.render('admin-guides', { guides });
+  } catch (error) {
+    console.error('Error managing guides:', error);
+    res.status(500).render('error', { error: 'Failed to load guides management' });
+  }
+}
+
+// Admin create guide
+async function adminCreateGuide(req, res) {
+  try {
+    // Check if user is admin
+    if (!req.session.loggedIn || !req.session.user.is_admin) {
+      return res.status(403).json({ success: false, message: 'Unauthorized' });
+    }
+    
+    const { title, category, content } = req.body;
+    
+    if (!title || !category || !content) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Title, category and content are required' 
+      });
+    }
+    
+    // In a real implementation, this would save to a database
+    // For now, we'll just return success
+    
+    return res.json({ 
+      success: true, 
+      message: 'Guide created successfully',
+      guide: {
+        id: Date.now(), // Simulating an auto-generated ID
+        title,
+        category,
+        content,
+        publishDate: new Date().toISOString().split('T')[0]
+      }
+    });
+  } catch (error) {
+    console.error('Error creating guide:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'An error occurred while creating the guide' 
+    });
+  }
+}
+
+// Admin update guide
+async function adminUpdateGuide(req, res) {
+  try {
+    // Check if user is admin
+    if (!req.session.loggedIn || !req.session.user.is_admin) {
+      return res.status(403).json({ success: false, message: 'Unauthorized' });
+    }
+    
+    const { guideId, title, category, content } = req.body;
+    
+    if (!guideId || !title || !category || !content) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Guide ID, title, category and content are required' 
+      });
+    }
+    
+    // In a real implementation, this would update the database
+    // For now, we'll just return success
+    
+    return res.json({ 
+      success: true, 
+      message: 'Guide updated successfully'
+    });
+  } catch (error) {
+    console.error('Error updating guide:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'An error occurred while updating the guide' 
+    });
+  }
+}
+
+// Admin delete guide
+async function adminDeleteGuide(req, res) {
+  try {
+    // Check if user is admin
+    if (!req.session.loggedIn || !req.session.user.is_admin) {
+      return res.status(403).json({ success: false, message: 'Unauthorized' });
+    }
+    
+    const { guideId } = req.body;
+    
+    if (!guideId) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Guide ID is required' 
+      });
+    }
+    
+    // In a real implementation, this would delete from the database
+    // For now, we'll just return success
+    
+    return res.json({ 
+      success: true, 
+      message: 'Guide deleted successfully'
+    });
+  } catch (error) {
+    console.error('Error deleting guide:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'An error occurred while deleting the guide' 
+    });
+  }
+}
+
 module.exports = {
   login,
   register,
@@ -617,5 +901,13 @@ module.exports = {
   checkAuthentication,
   logUserData,
   getPublicUserProfile,
-  getPublicUserProfileByUsername
+  getPublicUserProfileByUsername,
+  resetAdminPassword,
+  adminManageUsers,
+  adminDeleteUser,
+  adminToggleAdminStatus,
+  adminManageGuides,
+  adminCreateGuide,
+  adminUpdateGuide,
+  adminDeleteGuide
 };

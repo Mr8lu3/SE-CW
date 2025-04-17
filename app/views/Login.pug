@@ -235,6 +235,16 @@ html(lang="en")
         text-align: center;
       }
 
+      .success-message {
+        color: #4CAF50;
+        background-color: rgba(76, 175, 80, 0.1);
+        border: 1px solid rgba(76, 175, 80, 0.3);
+        border-radius: 5px;
+        padding: 10px;
+        margin-bottom: 15px;
+        text-align: center;
+      }
+
       .footer {
         text-align: center;
         background-color: rgba(0, 0, 0, 0.5); /* More translucent footer */
@@ -268,6 +278,9 @@ html(lang="en")
       if error
         .error-message
           p= error
+      if success
+        .success-message
+          p= success
       form(action='/login' method='POST')
         input(type='text' name='username' placeholder='Username' required='')
         input(type='password' name='password' placeholder='Password' required='')

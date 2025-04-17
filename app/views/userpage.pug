@@ -474,6 +474,9 @@ html(lang="en")
           a(href='/userpage') User
           a(href='/Details_page') About Us
           a(href='/Guides') Guides
+          if user && user.is_admin
+            a(href='/admin') Admin
+          a(href='/logout') Logout
 
     // User Profile Container
     .container

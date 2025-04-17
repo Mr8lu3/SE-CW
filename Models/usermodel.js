@@ -188,13 +188,26 @@ async function getUserById(id) {
     `;
     
     const idColumns = await db.query(idColumnQuery);
-    const idColumnName = idColumns.length > 0 ? idColumns[0].COLUMN_NAME : 'id';
+    const idColumnName = idColumns.length > 0 ? idColumns[0].COLUMN_NAME : 'user_id'; // Default to user_id
     
+    console.log(`Using ${idColumnName} as primary key for users table`);
     const query = `SELECT * FROM users WHERE ${idColumnName} = ?`;
     console.log(`Executing getUserById with query: ${query} and id: ${id}`);
     
     const users = await db.query(query, [id]);
-    return users.length > 0 ? users[0] : null;
+    
+    if (users.length > 0) {
+      // Ensure user has consistent id fields for the application
+      const user = users[0];
+      if (idColumnName === 'user_id' && !user.id) {
+        user.id = user.user_id; // Add 'id' if it doesn't exist and primary key is user_id
+      } else if (idColumnName === 'id' && !user.user_id) {
+        user.user_id = user.id; // Add 'user_id' if it doesn't exist and primary key is id
+      }
+      return user;
+    }
+    
+    return null;
   } catch (error) {
     console.error('Error getting user by ID:', error);
     throw error;
@@ -340,7 +353,9 @@ async function updateUser(userId, updateData) {
     `;
     
     const idColumns = await db.query(idColumnQuery);
-    const idColumnName = idColumns.length > 0 ? idColumns[0].COLUMN_NAME : 'id';
+    const idColumnName = idColumns.length > 0 ? idColumns[0].COLUMN_NAME : 'user_id'; // Default to user_id
+    
+    console.log(`Using ${idColumnName} as primary key for users table in update operation`);
     
     // Check if favorite_games column exists
     const favoriteGamesColumnQuery = `
